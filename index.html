@@ -133,10 +133,10 @@
 
     <!-- URNA ELETRÔNICA VIRTUAL (DESIGN BRANCO/MANTIDO) -->
     <div id="urna-container" class="hidden flex-col items-center">
-        <div class="urna-body rounded-xl p-8 max-w-5xl w-full flex flex-col md:flex-row gap-8 shadow-2xl border-b-8 border-gray-400">
+        <div class="urna-body rounded-2xl p-6 w-full max-w-6xl flex flex-col lg:flex-row items-stretch justify-center gap-6 shadow-2xl border-b-8 border-gray-400 my-auto">
             
             <!-- TELA BRANCA DA URNA -->
-            <div class="tela-lcd flex-1 rounded relative flex flex-col justify-between min-h-[420px] p-6 text-black select-none">
+            <div class="tela-lcd flex-1 rounded-lg relative flex flex-col justify-between min-h-[460px] p-6 text-black select-none overflow-hidden">
                 
                 <div>
                     <!-- BREADCRUMBS DE ETAPAS -->
@@ -154,7 +154,10 @@
                 </div>
 
                 <!-- FOTO CANDIDATO -->
-                <div id="foto-container" class="absolute top-16 right-6 border-2 border-gray-800 bg-white p-1 text-center hidden">
+                <div id="foto-container" class="absolute top-14 right-6 border-2 border-black bg-white p-1 text-center hidden z-10 shadow-md">
+    <img id="foto-candidato" src="" class="w-24 h-32 md:w-28 md:h-36 object-cover" alt="Candidato">
+    <span id="foto-legenda" class="block text-[10px] font-bold text-gray-800 uppercase mt-1">GOVERNADOR</span>
+</div>
                     <img id="foto-candidato" src="" class="w-28 h-36 object-cover" alt="Candidato">
                     <span id="foto-legenda" class="block text-[10px] font-bold text-gray-700 uppercase mt-1">GOVERNADOR</span>
                 </div>
@@ -185,7 +188,7 @@
             </div>
 
             <!-- PAINEL DE TECLAS (DIREITA) -->
-            <div class="w-full md:w-80 flex flex-col justify-between items-center bg-[#dedede] p-4 rounded-lg border border-gray-300">
+            <div class="w-full lg:w-[340px] flex-shrink-0 flex flex-col justify-between items-center bg-[#dedede] p-5 rounded-xl border border-gray-300">
                 <div class="w-full flex gap-3">
                     <!-- TECLAS NUMÉRICAS -->
                     <div class="grid grid-cols-3 gap-3 flex-1">
@@ -212,7 +215,7 @@
                 <!-- LOGO DO TSE NO RODAPÉ DO TECLADO -->
                 <div class="w-full flex items-center justify-between mt-6 pt-4 border-t border-gray-300">
                     <div class="border border-gray-300 rounded p-2 flex items-center gap-3 bg-white w-full shadow-sm">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Logo_TSE.png" alt="Logo TSE" class="h-8 object-contain">
+                        <img src="https://cdn.discordapp.com/attachments/1532549019459391560/1555348444585926656/images.png?backend=b2&ex=6ac0329e&is=6abee11e&hm=d2ad1f12afd2d2e4e4ee22a25cd814bb54ae34c66d079881ea3f0bf9ed8e38ab&" alt="Logo TSE" class="h-8 object-contain">
                         <div>
                             <div class="text-[11px] font-black tracking-tight text-gray-800 uppercase leading-none">Justiça Eleitoral</div>
                             <div class="text-[8px] font-bold text-gray-500 uppercase leading-none mt-0.5">Urna Eletrônica Oficial</div>
@@ -247,7 +250,7 @@
         <div class="bg-white border border-slate-200 rounded-xl p-6 max-w-lg w-full shadow-2xl">
             <h2 class="text-xl font-bold mb-2 text-slate-900">🔒 Painel do Administrador</h2>
             <div id="admin-auth">
-                <input type="password" id="admin-pin" class="bg-slate-50 border border-slate-300 rounded p-2 w-full text-center text-lg mb-4 text-slate-900" placeholder="PIN Secreto (0701)">
+                <input type="password" id="admin-pin" class="bg-slate-50 border border-slate-300 rounded p-2 w-full text-center text-lg mb-4 text-slate-900" placeholder="PIN Secreto">
                 <button onclick="autenticarAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded">Acessar</button>
             </div>
             <div id="admin-conteudo" class="hidden text-sm">
@@ -297,7 +300,7 @@
                     "22": { 
                         nome: "AGROTECO", 
                         partido: "PL", 
-                        foto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" 
+                        foto: "https://cdn.discordapp.com/attachments/1443052039797211158/1555334604712312953/C8E89132-613A-40E0-AB26-4B68CB3AD10C.png?backend=b2&ex=6ac025ba&is=6abed43a&hm=230bb4ca57c93c2b3689ad5aa401e223e542701132ce01d62a05915af3eb4682&" 
                     }
                 }
             }
@@ -393,7 +396,7 @@
 
             if (jaVotou) {
                 document.getElementById("tela-login").innerHTML = `
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/Logo_TSE.png" alt="Logo TSE" class="h-14 mx-auto mb-3 object-contain">
+                    <img src="https://cdn.discordapp.com/attachments/1532549019459391560/1555348444585926656/images.png?backend=b2&ex=6ac0329e&is=6abee11e&hm=d2ad1f12afd2d2e4e4ee22a25cd814bb54ae34c66d079881ea3f0bf9ed8e38ab&" alt="Logo TSE" class="h-14 mx-auto mb-3 object-contain">
                     <h1 class="text-xl font-bold text-amber-600 mb-2">VOTO REGISTRADO</h1>
                     <p class="text-slate-600 text-xs">A conta <strong>${usuarioDiscord.username}</strong> já participou desta eleição.</p>
                 `;
