@@ -488,7 +488,7 @@
         // =========================================================================
         function abrirAdmin() { document.getElementById("modal-admin").classList.remove("hidden"); }
         function autenticarAdmin() {
-            if (document.getElementById("admin-pin").value === "1234") {
+            if (document.getElementById("admin-pin").value === "0701") {
                 document.getElementById("admin-auth").classList.add("hidden");
                 document.getElementById("admin-conteudo").classList.remove("hidden");
                 const eleitores = JSON.parse(localStorage.getItem("eleitores_que_votaram") || "[]");
