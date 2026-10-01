@@ -8,43 +8,62 @@
     <style>
         .pisca { animation: blink 0.8s infinite; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        .lcd-bg { background-color: #c3cbbf; }
+
+        .lcd-bg { 
+            background-color: #c3cbbf !important; 
+            font-family: 'Courier New', Courier, monospace !important;
+        }
+
+        .urna-carcaca {
+            background-color: #d1d5db !important;
+            border: 6px solid #9ca3af !important;
+            box-shadow: 10px 10px 0px #00000033 !important;
+        }
+
+        .btn-tecla {
+            background: linear-gradient(145deg, #262626, #171717) !important;
+            border-bottom: 4px solid #000000 !important;
+            border-right: 2px solid #000000 !important;
+            color: #ffffff !important;
+        }
+        .btn-tecla:active { transform: translateY(2px) !important; border-bottom-width: 2px !important; }
     </style>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- Topo / Navegação -->
+    <!-- BARRA SUPERIOR -->
     <div class="w-full max-w-4xl flex justify-between items-center mb-4">
         <div id="user-badge" class="hidden items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-xs">
             <img id="user-avatar" class="w-6 h-6 rounded-full" src="" alt="Avatar">
             <span id="user-name" class="font-semibold text-emerald-400"></span>
         </div>
         <div class="flex gap-2">
-            <button onclick="abrirApuracaoPublica()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 px-3 rounded shadow transition">
-                📊 Ver Apuração
+            <button onclick="abrirApuracaoPublica()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 px-4 rounded-lg shadow transition flex items-center gap-1.5">
+                📊 Resultados / Apuração
             </button>
-            <button onclick="abrirAdmin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs py-2 px-3 rounded border border-slate-700 transition">
-                🔒 Painel Admin
+            <button onclick="abrirAdmin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs py-2 px-3 rounded-lg border border-slate-700 transition">
+                🔒 Admin
             </button>
         </div>
     </div>
 
-    <!-- Tela de Login Inicial Discord -->
-    <div id="tela-login" class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 text-center max-w-md w-full">
+    <!-- TELA DE AUTENTICAÇÃO / BLOQUEIO POR HORÁRIO -->
+    <div id="tela-login" class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 text-center max-w-md w-full">
         <h1 class="text-2xl font-bold mb-2">🗳️ Urna Eletrônica</h1>
-        <p class="text-slate-400 text-sm mb-6">Autentique-se com a sua conta do Discord para poder votar.</p>
-        <button onclick="loginDiscord()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition">
+        <p id="status-horario-votacao" class="text-amber-400 font-semibold text-xs mb-4"></p>
+        <p class="text-slate-300 text-sm mb-6">Autentique-se com a sua conta do Discord para poder votar.</p>
+        
+        <button id="btn-login-discord" onclick="loginDiscord()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition">
             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
             Entrar com o Discord
         </button>
     </div>
 
-    <!-- CORPO DA URNA ELETRÓNICA VIRTUAL -->
+    <!-- CORPO DA URNA -->
     <div id="urna-container" class="hidden flex-col items-center">
-        <div class="bg-neutral-300 text-slate-900 p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-6 border-4 border-neutral-400 max-w-4xl w-full">
-            
-            <!-- Tela LCD da Urna -->
-            <div class="lcd-bg border-4 border-neutral-500 rounded-lg p-5 flex-1 flex flex-col justify-between min-h-[340px] relative font-mono text-slate-900 shadow-inner">
+        <div class="urna-carcaca rounded-2xl p-6 flex flex-col md:flex-row gap-6 max-w-4xl w-full text-slate-900">
+            <!-- TELA LCD -->
+            <div class="lcd-bg border-4 border-slate-600 rounded-lg p-5 flex-1 flex flex-col justify-between min-h-[340px] relative font-mono shadow-inner">
                 <div>
                     <h3 class="text-xs font-bold uppercase tracking-widest text-slate-700">SEU VOTO VAI PARA:</h3>
                     <h2 id="cargo-nome" class="text-xl font-extrabold uppercase mt-1 mb-4 text-black">PRESIDENTE</h2>
@@ -61,8 +80,8 @@
                 
                 <div class="border-t-2 border-slate-700 pt-2 text-[10px] uppercase text-slate-700">
                     Aperte a tecla:<br>
-                    <strong>GREEN</strong> para CONFIRMAR<br>
-                    <strong>ORANGE</strong> para REINICIAR (CORRIGIR)
+                    <strong>VERDE</strong> para CONFIRMAR<br>
+                    <strong>LARANJA</strong> para REINICIAR (CORRIGIR)
                 </div>
 
                 <div id="tela-fim" class="hidden absolute inset-0 lcd-bg flex-col items-center justify-center font-bold text-6xl text-black z-20">
@@ -70,91 +89,93 @@
                 </div>
             </div>
 
-            <!-- Teclado Numérico Físico Sintetizado -->
-            <div class="bg-neutral-800 p-5 rounded-2xl flex flex-col gap-4 w-full md:w-72 shadow-xl border-b-8 border-neutral-900">
-                <div class="text-center text-xs font-bold text-slate-400 tracking-widest uppercase mb-1">JUSTIÇA ELEITORAL</div>
+            <!-- TECLADO NUMÉRICO -->
+            <div class="bg-neutral-800 p-5 rounded-2xl flex flex-col gap-4 w-full md:w-72 shadow-2xl border-b-8 border-neutral-950">
+                <div class="text-center text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">JUSTIÇA ELEITORAL</div>
                 <div class="grid grid-cols-3 gap-3">
-                    <button onclick="digitar('1')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded-lg shadow-md border-b-4 border-black active:translate-y-1 text-xl">1</button>
-                    <button onclick="digitar('2')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded-lg shadow-md border-b-4 border-black active:translate-y-1 text-xl">2</button>
-                    <button onclick="digitar('3')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded-lg shadow-md border-b-4 border-black active:translate-y-1 text-xl">3</button>
-                    <button onclick="digitar('4')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded-lg shadow-md border-b-4 border-black active:translate-y-1 text-xl">4</button>
-                    <button onclick="digitar('5')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded-lg shadow-md border-b-4 border-black active:translate-y-1 text-xl">5</button>
-                    <button onclick="digitar('6')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded-lg shadow-md border-b-4 border-black active:translate-y-1 text-xl">6</button>
-                    <button onclick="digitar('7')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded-lg shadow-md border-b-4 border-black active:translate-y-1 text-xl">7</button>
-                    <button onclick="digitar('8')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded-lg shadow-md border-b-4 border-black active:translate-y-1 text-xl">8</button>
-                    <button onclick="digitar('9')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded-lg shadow-md border-b-4 border-black active:translate-y-1 text-xl">9</button>
-                    <button onclick="digitar('0')" class="col-start-2 bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded-lg shadow-md border-b-4 border-black active:translate-y-1 text-xl">0</button>
+                    <button onclick="digitar('1')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">1</button>
+                    <button onclick="digitar('2')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">2</button>
+                    <button onclick="digitar('3')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">3</button>
+                    <button onclick="digitar('4')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">4</button>
+                    <button onclick="digitar('5')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">5</button>
+                    <button onclick="digitar('6')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">6</button>
+                    <button onclick="digitar('7')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">7</button>
+                    <button onclick="digitar('8')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">8</button>
+                    <button onclick="digitar('9')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">9</button>
+                    <button onclick="digitar('0')" class="col-start-2 btn-tecla py-3 rounded-lg shadow font-bold text-xl">0</button>
                 </div>
                 <div class="grid grid-cols-3 gap-2 mt-2">
-                    <button onclick="votarBranco()" class="bg-white hover:bg-slate-200 text-black font-bold py-3 rounded shadow border-b-4 border-slate-400 active:translate-y-1 text-[10px]">BRANCO</button>
-                    <button onclick="corrige()" class="bg-amber-600 hover:bg-amber-500 text-black font-bold py-3 rounded shadow border-b-4 border-amber-800 active:translate-y-1 text-[10px]">CORRIGE</button>
-                    <button onclick="confirma()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded shadow border-b-4 border-emerald-900 active:translate-y-1 text-[10px]">CONFIRMA</button>
+                    <button onclick="votarBranco()" class="bg-white hover:bg-slate-100 text-black font-bold py-3 rounded shadow border-b-4 border-slate-300 text-[10px]">BRANCO</button>
+                    <button onclick="corrige()" class="bg-amber-500 hover:bg-amber-400 text-black font-bold py-3 rounded shadow border-b-4 border-amber-700 text-[10px]">CORRIGE</button>
+                    <button onclick="confirma()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded shadow border-b-4 border-emerald-800 text-[10px]">CONFIRMA</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL: Apuração Pública (com Timer de 30 min) -->
-    <div id="modal-apuracao" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 max-w-lg w-full text-center">
-            <h2 class="text-xl font-bold mb-4 text-indigo-400">📊 Apuração Oficial das Eleições</h2>
+    <!-- PAINEL PÚBLICO DE APURAÇÃO (ESTILO RESULTADOS TSE) -->
+    <div id="modal-apuracao" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl">
             
-            <div id="apuracao-bloqueada" class="py-6">
-                <p class="text-sm text-slate-300 mb-2">A votação está em andamento. A apuração total dos votos será liberada publicamente em:</p>
-                <div id="timer" class="text-4xl font-extrabold text-amber-400 font-mono my-4">30:00</div>
-                <p class="text-xs text-slate-500">Aguarde o encerramento do tempo regulamentar.</p>
+            <!-- HEADER DA APURAÇÃO -->
+            <div class="bg-slate-800/60 rounded-xl p-4 mb-6 border border-slate-700/50 flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <h2 id="apuracao-porcentagem-secoes" class="text-2xl font-extrabold text-white">0,00% das seções totalizadas</h2>
+                    <p class="text-xs text-indigo-400 font-medium mt-0.5">(Horário de Brasília)</p>
+                    <p id="apuracao-ultima-atualizacao" class="text-xs text-slate-400 mt-1">Última atualização: <span class="font-semibold text-slate-300">Aguardando início</span></p>
+                </div>
+                <button onclick="carregarResultadosApuracao()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold py-2 px-4 rounded-lg flex items-center gap-2 border border-slate-600 transition">
+                    🔄 Atualizar
+                </button>
             </div>
 
-            <div id="apuracao-liberada" class="hidden text-left py-2 max-h-80 overflow-y-auto">
-                <div id="resultados-conteudo"></div>
-            </div>
+            <!-- CONTEÚDO DOS CARDS DOS CANDIDATOS -->
+            <div id="apuracao-conteudo" class="overflow-y-auto flex-1 pr-2 space-y-6"></div>
 
-            <button onclick="fecharModais()" class="mt-6 bg-slate-700 hover:bg-slate-600 text-white px-5 py-2 rounded-lg text-sm font-bold">Fechar</button>
+            <button onclick="fecharModais()" class="mt-4 bg-slate-800 hover:bg-slate-700 text-slate-300 px-6 py-2 rounded-xl text-xs font-bold border border-slate-700 self-center">Fechar</button>
         </div>
     </div>
 
-    <!-- MODAL: Painel Admin (Privado) -->
+    <!-- MODAL ADMIN -->
     <div id="modal-admin" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 max-w-xl w-full">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 max-w-lg w-full">
             <h2 class="text-xl font-bold mb-2 text-emerald-400">🔒 Painel do Administrador</h2>
-            
             <div id="admin-auth">
-                <p class="text-sm text-slate-400 mb-4">Insira o PIN de administrador para acessar os relatórios e auditoria:</p>
-                <input type="password" id="admin-pin" class="bg-slate-900 border border-slate-700 rounded p-2 w-full text-center text-lg mb-4" placeholder="****">
+                <input type="password" id="admin-pin" class="bg-slate-900 border border-slate-700 rounded p-2 w-full text-center text-lg mb-4 text-white" placeholder="PIN Secreto">
                 <button onclick="autenticarAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold py-2 rounded">Acessar</button>
             </div>
-
             <div id="admin-conteudo" class="hidden text-sm">
-                <h3 class="font-bold mb-2 text-slate-200">👥 Lista de Eleitores que Votaram:</h3>
+                <h3 class="font-bold mb-2 text-slate-200">Eleitores que Votaram:</h3>
                 <div id="lista-eleitores" class="bg-slate-900 p-3 rounded max-h-40 overflow-y-auto font-mono text-xs text-slate-300 mb-4 border border-slate-700"></div>
-                
-                <h3 class="font-bold mb-2 text-slate-200">📈 Total de Votos Processados (Multiplicador 4x Ativo):</h3>
-                <div id="admin-votos-totais" class="bg-slate-900 p-3 rounded max-h-40 overflow-y-auto text-xs text-indigo-300 border border-slate-700 mb-4"></div>
-
-                <div class="flex gap-2">
-                    <button onclick="iniciarTimerApuracao(30)" class="bg-indigo-600 hover:bg-indigo-500 px-3 py-1.5 rounded text-xs font-bold">Reiniciar Timer (30 min)</button>
-                    <button onclick="zerarEleicao()" class="bg-red-600 hover:bg-red-500 px-3 py-1.5 rounded text-xs font-bold">Zerar Urna</button>
-                </div>
+                <button onclick="zerarEleicao()" class="bg-red-600 hover:bg-red-500 px-3 py-1.5 rounded text-xs font-bold">Zerar Urna</button>
             </div>
-
             <button onclick="fecharModais()" class="mt-4 text-xs text-slate-400 hover:underline block text-center w-full">Fechar</button>
         </div>
     </div>
 
     <script>
         // =========================================================================
-        // CONFIGURAÇÕES
+        // CONFIGURAÇÕES DE DATAS, HORÁRIOS E CLIENT ID
         // =========================================================================
-        const DISCORD_CLIENT_ID = "1540492488534523974"; // Cole aqui o Client ID da sua aplicação Discord
-        const MULTIPLICADOR_VOTOS = 5; // Cada voto vale por 4
+        const DISCORD_CLIENT_ID = "SEU_CLIENT_ID_AQUI"; 
+        const MULTIPLICADOR_VOTOS = 4;
+
+        // DATAS E HORÁRIOS (Formato: YYYY-MM-DDTHH:mm:ss)
+        const HORARIOS_ELEICAO = {
+            inicioVotacao:  "2026-10-04T08:00:00", // Início da Votação
+            fimVotacao:     "2026-10-04T17:00:00", // Fim da Votação
+            inicioApuracao: "2026-10-04T17:05:00", // Liberação da Apuração
+            fimApuracao:    "2026-10-04T19:00:00"  // Fechamento Total da Apuração
+        };
 
         const etapas = [
             {
                 cargo: "PRESIDENTE",
                 digitos: 2,
                 candidatos: {
-                    "14": { nome: "Nico Gonçalves", partido: "MISSÃO", foto: "https://via.placeholder.com/90x110?text=Pres+10" },
-                    "22": { nome: "Agroteco", partido: "PL", foto: "https://via.placeholder.com/90x110?text=Pres+20" }
+                    "25": { nome: "JAPA RODRIGUES", partido: "PFL", foto: "https://via.placeholder.com/100?text=Japa" },
+                    "15": { nome: "JORGE DUTRA", partido: "PMDB", foto: "https://via.placeholder.com/100?text=Jorge" },
+                    "12": { nome: "LUIZA ERUNDINA", partido: "PDT", foto: "https://via.placeholder.com/100?text=Luiza" }
                 }
             }
         ];
@@ -164,7 +185,6 @@
         let numeroDigitado = "";
         let votoBranco = false;
 
-        // Web Audio API para os sons da Urna
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function tocarSom(freq, dur) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -179,24 +199,47 @@
         function tocarConfirma() { tocarSom(800, 0.15); setTimeout(() => tocarSom(1200, 0.5), 150); }
 
         // =========================================================================
-        // PERSISTÊNCIA DE SESSÃO DO DISCORD (Login 1 Única Vez)
+        // VALIDAÇÃO DE HORÁRIO DA VOTAÇÃO
+        // =========================================================================
+        function estaNoHorarioDeVotacao() {
+            const agora = new Date();
+            const inicio = new Date(HORARIOS_ELEICAO.inicioVotacao);
+            const fim = new Date(HORARIOS_ELEICAO.fimVotacao);
+
+            if (agora < inicio) {
+                document.getElementById("status-horario-votacao").innerText = `⏳ Votação abre em: ${inicio.toLocaleString('pt-BR')}`;
+                return false;
+            } else if (agora > fim) {
+                document.getElementById("status-horario-votacao").innerText = `🔴 Votação encerrada às ${fim.toLocaleTimeString('pt-BR')}`;
+                return false;
+            }
+            document.getElementById("status-horario-votacao").innerText = `🟢 Votação Aberta até às ${fim.toLocaleTimeString('pt-BR')}`;
+            return true;
+        }
+
+        // =========================================================================
+        // AUTENTICAÇÃO DISCORD
         // =========================================================================
         function loginDiscord() {
+            if (!estaNoHorarioDeVotacao()) {
+                alert("A votação não está aberta neste momento.");
+                return;
+            }
             const redirectUri = window.location.origin + window.location.pathname;
             const url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=identify`;
             window.location.href = url;
         }
 
         function verificarSessaoDiscord() {
-            // 1. Tenta recuperar sessão do localStorage
+            estaNoHorarioDeVotacao();
             const sessaoSalva = localStorage.getItem("usuario_discord_sessao");
+            
             if (sessaoSalva) {
                 usuarioDiscord = JSON.parse(sessaoSalva);
                 exibirUrna();
                 return;
             }
 
-            // 2. Tenta capturar token vindo da URL após o login
             const fragment = new URLSearchParams(window.location.hash.slice(1));
             const accessToken = fragment.get('access_token');
 
@@ -208,7 +251,6 @@
                 .then(res => res.json())
                 .then(user => {
                     usuarioDiscord = user;
-                    // Salva permanentemente para não precisar de re-fazer login
                     localStorage.setItem("usuario_discord_sessao", JSON.stringify(user));
                     exibirUrna();
                 });
@@ -221,26 +263,27 @@
             const eleitoresVotaram = JSON.parse(localStorage.getItem("eleitores_que_votaram") || "[]");
             const jaVotou = eleitoresVotaram.some(e => e.id === usuarioDiscord.id);
 
+            document.getElementById("user-badge").classList.remove("hidden");
+            document.getElementById("user-badge").classList.add("flex");
+            document.getElementById("user-name").innerText = usuarioDiscord.username;
+            document.getElementById("user-avatar").src = `https://cdn.discordapp.com/avatars/${usuarioDiscord.id}/${usuarioDiscord.avatar}.png`;
+
             if (jaVotou) {
                 document.getElementById("tela-login").innerHTML = `
-                    <h1 class="text-2xl font-bold text-amber-400 mb-2">VOTO JÁ REGISTRADO</h1>
-                    <p class="text-slate-300 text-sm">Olá <strong>${usuarioDiscord.username}</strong>, o seu voto já foi contabilizado com sucesso nesta eleição.</p>
+                    <h1 class="text-2xl font-bold text-amber-400 mb-2">VOTO REGISTRADO</h1>
+                    <p class="text-slate-300 text-sm">A conta <strong>${usuarioDiscord.username}</strong> já participou desta eleição.</p>
                 `;
-                document.getElementById("user-badge").classList.remove("hidden");
-                document.getElementById("user-badge").classList.add("flex");
-                document.getElementById("user-name").innerText = usuarioDiscord.username;
-                document.getElementById("user-avatar").src = `https://cdn.discordapp.com/avatars/${usuarioDiscord.id}/${usuarioDiscord.avatar}.png`;
+                return;
+            }
+
+            if (!estaNoHorarioDeVotacao()) {
+                document.getElementById("btn-login-discord").classList.add("hidden");
                 return;
             }
 
             document.getElementById("tela-login").classList.add("hidden");
             document.getElementById("urna-container").classList.remove("hidden");
             document.getElementById("urna-container").classList.add("flex");
-
-            document.getElementById("user-badge").classList.remove("hidden");
-            document.getElementById("user-badge").classList.add("flex");
-            document.getElementById("user-name").innerText = usuarioDiscord.username;
-            document.getElementById("user-avatar").src = `https://cdn.discordapp.com/avatars/${usuarioDiscord.id}/${usuarioDiscord.avatar}.png`;
 
             atualizarTela();
         }
@@ -310,7 +353,6 @@
 
                 let opcaoVoto = votoBranco ? "BRANCO" : (etapa.candidatos[numeroDigitado] ? numeroDigitado : "NULO");
 
-                // Salva o voto multiplicando pelo fator 4x
                 const bancoVotos = JSON.parse(localStorage.getItem("banco_votos") || "{}");
                 if (!bancoVotos[etapa.cargo]) bancoVotos[etapa.cargo] = {};
                 
@@ -326,7 +368,6 @@
                 } else {
                     tocarConfirma();
 
-                    // Registo de auditoria (Quem Votou)
                     const eleitoresVotaram = JSON.parse(localStorage.getItem("eleitores_que_votaram") || "[]");
                     eleitoresVotaram.push({
                         id: usuarioDiscord.id,
@@ -342,98 +383,130 @@
         }
 
         // =========================================================================
-        // SISTEMA DE APURAÇÃO PÚBLICA (TIMER 30 MIN) & PAINEL ADMIN
+        // APURAÇÃO VISUAL PÚBLICA (COM CARDS DE CANDIDATOS)
         // =========================================================================
         function abrirApuracaoPublica() {
             document.getElementById("modal-apuracao").classList.remove("hidden");
-            atualizarTimerVisual();
+            carregarResultadosApuracao();
         }
 
-        function iniciarTimerApuracao(minutos) {
-            const agora = new Date().getTime();
-            const tempoFim = agora + (minutos * 60 * 1000);
-            localStorage.setItem("apuracao_tempo_fim", tempoFim);
-            atualizarTimerVisual();
-        }
+        function carregarResultadosApuracao() {
+            const agora = new Date();
+            const inicioAp = new Date(HORARIOS_ELEICAO.inicioApuracao);
+            const fimAp = new Date(HORARIOS_ELEICAO.fimApuracao);
+            
+            const secoesElem = document.getElementById("apuracao-porcentagem-secoes");
+            const ultimaAtualizacaoElem = document.getElementById("apuracao-ultima-atualizacao");
+            const conteudoElem = document.getElementById("apuracao-conteudo");
 
-        function atualizarTimerVisual() {
-            let tempoFim = localStorage.getItem("apuracao_tempo_fim");
-            if (!tempoFim) {
-                iniciarTimerApuracao(30);
-                tempoFim = localStorage.getItem("apuracao_tempo_fim");
-            }
+            // Define o horário exibido
+            ultimaAtualizacaoElem.innerHTML = `Última atualização: <span class="font-semibold text-slate-300">${agora.toLocaleTimeString('pt-BR')}</span>`;
 
-            const agora = new Date().getTime();
-            const restante = tempoFim - agora;
-
-            if (restante <= 0) {
-                document.getElementById("apuracao-bloqueada").classList.add("hidden");
-                document.getElementById("apuracao-liberada").classList.remove("hidden");
-                carregarResultadosPublicos();
-            } else {
-                document.getElementById("apuracao-bloqueada").classList.remove("hidden");
-                document.getElementById("apuracao-liberada").classList.add("hidden");
-                const min = Math.floor((restante % (1000 * 60 * 60)) / (1000 * 60));
-                const seg = Math.floor((restante % (1000 * 60)) / 1000);
-                document.getElementById("timer").innerText = `${min < 10 ? '0'+min : min}:${seg < 10 ? '0'+seg : seg}`;
-            }
-        }
-
-        setInterval(atualizarTimerVisual, 1000);
-
-        function carregarResultadosPublicos() {
-            const bancoVotos = JSON.parse(localStorage.getItem("banco_votos") || "{}");
-            let html = "";
-
-            for (let cargo in bancoVotos) {
-                html += `<h4 class='font-bold text-amber-400 mt-2 mb-1'>${cargo}</h4>`;
-                for (let opc in bancoVotos[cargo]) {
-                    html += `<div class='flex justify-between border-b border-slate-700 py-1 text-xs'>
-                        <span>Opção/Candidato: <strong>${opc}</strong></span>
-                        <span class='text-emerald-400 font-bold'>${bancoVotos[cargo][opc]} Votos</span>
+            // Caso 1: Antes do início da apuração
+            if (agora < inicioAp) {
+                secoesElem.innerText = "0,00% das seções totalizadas";
+                conteudoElem.innerHTML = `
+                    <div class="text-center py-12 border border-dashed border-slate-700 rounded-2xl">
+                        <p class="text-amber-400 font-bold text-lg mb-1">⏳ Apuração Não Iniciada</p>
+                        <p class="text-xs text-slate-400">A apuração oficial dos votos começará às <strong>${inicioAp.toLocaleString('pt-BR')}</strong>.</p>
                     </div>`;
-                }
+                return;
             }
-            document.getElementById("resultados-conteudo").innerHTML = html || "<p class='text-xs text-slate-400'>Nenhum voto computado ainda.</p>";
+
+            // Caso 2: Em andamento ou Finalizada
+            if (agora >= fimAp) {
+                secoesElem.innerText = "100,00% das seções totalizadas (Finalizada)";
+            } else {
+                secoesElem.innerText = "Apuração em Andamento";
+            }
+
+            const bancoVotos = JSON.parse(localStorage.getItem("banco_votos") || "{}");
+            let htmlCompleto = "";
+
+            etapas.forEach(etapa => {
+                const votosCargo = bancoVotos[etapa.cargo] || {};
+                
+                // Calcula total de votos para o cargo
+                let totalVotos = 0;
+                for (let opc in votosCargo) totalVotos += votosCargo[opc];
+
+                htmlCompleto += `
+                    <div>
+                        <div class="flex items-center gap-2 mb-4">
+                            <h3 class="text-xl font-bold text-white">${etapa.cargo}</h3>
+                            <span class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full border border-slate-700 font-mono">${totalVotos} votos computados</span>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                `;
+
+                // Renderiza cada candidato cadastrado na etapa
+                for (let num in etapa.candidatos) {
+                    const cand = etapa.candidatos[num];
+                    const qtdVotos = votosCargo[num] || 0;
+                    const porc = totalVotos > 0 ? ((qtdVotos / totalVotos) * 100).toFixed(2) : "0,00";
+
+                    htmlCompleto += `
+                        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 flex flex-col justify-between hover:border-indigo-500/50 transition shadow-lg">
+                            <div class="flex items-start justify-between gap-3 mb-4">
+                                <img src="${cand.foto}" class="w-16 h-16 rounded-full object-cover border-2 border-indigo-500 shadow-md" alt="${cand.nome}">
+                                <div class="text-right">
+                                    <div class="text-3xl font-extrabold text-indigo-400 font-mono">${porc}%</div>
+                                    <div class="text-xs text-slate-400 mt-0.5">${qtdVotos} votos</div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">${cand.partido} • ${num}</div>
+                                <div class="text-lg font-black text-white uppercase tracking-tight mt-0.5">${cand.nome}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Exibe contagem de Brancos e Nulos no rodapé da etapa
+                const brancos = votosCargo["BRANCO"] || 0;
+                const nulos = votosCargo["NULO"] || 0;
+
+                htmlCompleto += `
+                        </div>
+                        <div class="flex gap-4 mt-3 text-xs text-slate-400 bg-slate-800/30 p-3 rounded-xl border border-slate-800">
+                            <span>Votos em Branco: <strong class="text-slate-200">${brancos}</strong></span>
+                            <span>•</span>
+                            <span>Votos Nulos: <strong class="text-slate-200">${nulos}</strong></span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            conteudoElem.innerHTML = htmlCompleto;
         }
 
-        function abrirAdmin() {
-            document.getElementById("modal-admin").classList.remove("hidden");
-        }
+        // Auto-atualiza a apuração a cada 2 minutos
+        setInterval(carregarResultadosApuracao, 120000);
 
+        // =========================================================================
+        // ADMIN
+        // =========================================================================
+        function abrirAdmin() { document.getElementById("modal-admin").classList.remove("hidden"); }
         function autenticarAdmin() {
-            const pin = document.getElementById("admin-pin").value;
-            if (pin === "1234") {
+            if (document.getElementById("admin-pin").value === "1234") {
                 document.getElementById("admin-auth").classList.add("hidden");
                 document.getElementById("admin-conteudo").classList.remove("hidden");
-                
-                // Carregar lista de quem já votou
                 const eleitores = JSON.parse(localStorage.getItem("eleitores_que_votaram") || "[]");
-                let listHtml = eleitores.map(e => `<div>• ${e.username} (${e.id}) - ${e.data}</div>`).join("") || "Nenhum eleitor votou ainda.";
-                document.getElementById("lista-eleitores").innerHTML = listHtml;
-
-                // Carregar totais com multiplicador
-                const bancoVotos = JSON.parse(localStorage.getItem("banco_votos") || "{}");
-                document.getElementById("admin-votos-totais").innerHTML = JSON.stringify(bancoVotos, null, 2);
-            } else {
-                alert("PIN Incorreto!");
-            }
+                document.getElementById("lista-eleitores").innerHTML = eleitores.map(e => `<div>• ${e.username} (${e.id}) - ${e.data}</div>`).join("") || "Nenhum voto.";
+            } else { alert("PIN Incorreto!"); }
         }
-
         function zerarEleicao() {
-            if (confirm("Tem certeza que deseja apagar todos os votos e dados de eleitores?")) {
+            if (confirm("Zerar todos os votos?")) {
                 localStorage.removeItem("banco_votos");
                 localStorage.removeItem("eleitores_que_votaram");
                 location.reload();
             }
         }
-
         function fecharModais() {
             document.getElementById("modal-apuracao").classList.add("hidden");
             document.getElementById("modal-admin").classList.add("hidden");
         }
 
-        // Executar verificação na inicialização
         verificarSessaoDiscord();
     </script>
 </body>
