@@ -18,16 +18,16 @@ const etapas = [
         cargo: "GOVERNADOR",
         digitos: 2,
         candidatos: {
-            "10": { nome: "Carlos Eduardo", partido: "PARTIDO ALFA", foto: "https://via.placeholder.com/90x110?text=Gov+10" },
-            "20": { nome: "Fernanda Lima", partido: "PARTIDO BETA", foto: "https://via.placeholder.com/90x110?text=Gov+20" }
+            "22": { nome: "Alex Santana Pinto", partido: "PARTIDO LIBERAL", foto: "https://via.placeholder.com/90x110?text=Gov+10" }
+
         }
     },
     {
         cargo: "PRESIDENTE",
         digitos: 2,
         candidatos: {
-            "15": { nome: "Candidato A", partido: "PARTIDO A", foto: "https://via.placeholder.com/90x110?text=Pres+15" },
-            "25": { nome: "Candidato B", partido: "PARTIDO B", foto: "https://via.placeholder.com/90x110?text=Pres+25" }
+            "14": { nome: "Nico Gonçalves", partido: "PARTIDO MISSÃO", foto: "https://via.placeholder.com/90x110?text=Pres+15" },
+            "22": { nome: "Agroteco", partido: "PARTIDO LIBERAL", foto: "https://via.placeholder.com/90x110?text=Pres+25" }
         }
     }
 ];
