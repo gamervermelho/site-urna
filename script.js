@@ -9,7 +9,7 @@ const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/155527876843064534
 const IMPEDIR_VOTO_DUPLO = true;
 
 // 3. Som de Fim de Votação (Áudio da Urna)
-const somFim = new Audio("https://github.com/gamervermelho/site-urna/blob/main/urna.mp3");
+const somFim = new Audio("https://github.com/gamervermelho/site-urna/blob/main/urna.m4a");
 const somBip = new Audio("https://raw.githubusercontent.com/gamervermelho/urna-eletronica/main/assets/tecla-acelerada.m4a");
 
 // 4. ESTRUTURA DOS CARGOS E CANDIDATOS
