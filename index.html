@@ -3,178 +3,355 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urna Eletrônica Virtual</title>
+    <title>Urna Eletrônica Virtual - Justiça Eleitoral</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .pisca { animation: blink 0.8s infinite; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;600;700;800;900&display=swap');
 
-        .lcd-bg { 
-            background-color: #c3cbbf !important; 
-            font-family: 'Courier New', Courier, monospace !important;
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            user-select: none;
         }
 
-        .urna-carcaca {
-            background-color: #d1d5db !important;
-            border: 6px solid #9ca3af !important;
-            box-shadow: 10px 10px 0px #00000033 !important;
+        /* Animação do cursor piscando na urna */
+        .cursor-pisca {
+            animation: blink 0.8s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
-        .btn-tecla {
-            background: linear-gradient(145deg, #262626, #171717) !important;
-            border-bottom: 4px solid #000000 !important;
-            border-right: 2px solid #000000 !important;
-            color: #ffffff !important;
+        /* Moldura de gabinete realista da Urna Eletrônica */
+        .urna-gabinete {
+            background: linear-gradient(145deg, #e2e8f0 0%, #cbd5e1 50%, #94a3b8 100%);
+            border: 8px solid #64748b;
+            border-bottom-width: 12px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 2px 4px rgba(255, 255, 255, 0.8);
+            border-radius: 1.5rem;
         }
-        .btn-tecla:active { transform: translateY(2px) !important; border-bottom-width: 2px !important; }
+
+        /* Moldura interna da tela LCD com curvatura de vidro antigo */
+        .lcd-frame {
+            background-color: #78866b;
+            background: linear-gradient(135deg, #8b997e 0%, #758368 100%);
+            font-family: 'Share Tech Mono', 'Courier New', monospace;
+            border: 6px solid #334155;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(255, 255, 255, 0.2);
+            color: #0b1308;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Botões do Teclado Numérico em 3D com Textura de Plástico Rígido */
+        .btn-tecla-num {
+            background: linear-gradient(180deg, #2b2b2b 0%, #1a1a1a 100%);
+            border-top: 2px solid #404040;
+            border-left: 2px solid #333333;
+            border-right: 2px solid #111111;
+            border-bottom: 6px solid #000000;
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            transition: all 0.05s ease;
+        }
+        .btn-tecla-num:active {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.6);
+        }
+
+        /* Botões Especiais da Base */
+        .btn-tecla-branco {
+            background: linear-gradient(180deg, #ffffff 0%, #e2e8f0 100%);
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #f1f5f9;
+            border-right: 2px solid #cbd5e1;
+            border-bottom: 6px solid #94a3b8;
+            color: #000000;
+            font-weight: 800;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .btn-tecla-branco:active {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
+        }
+
+        .btn-tecla-corrige {
+            background: linear-gradient(180deg, #f97316 0%, #ea580c 100%);
+            border-top: 2px solid #fb923c;
+            border-left: 2px solid #f97316;
+            border-right: 2px solid #c2410c;
+            border-bottom: 6px solid #9a3412;
+            color: #000000;
+            font-weight: 800;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .btn-tecla-corrige:active {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
+        }
+
+        .btn-tecla-confirma {
+            background: linear-gradient(180deg, #22c55e 0%, #16a34a 100%);
+            border-top: 2px solid #4ade80;
+            border-left: 2px solid #22c55e;
+            border-right: 2px solid #15803d;
+            border-bottom: 6px solid #14532d;
+            color: #ffffff;
+            font-weight: 900;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .btn-tecla-confirma:active {
+            transform: translateY(4px);
+            border-bottom-width: 2px;
+        }
+
+        /* Esconder barra de rolagem estilizada */
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 8px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 8px;
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col items-center justify-center p-4">
+<body class="min-h-screen flex flex-col justify-between items-center p-3 md:p-6">
 
-    <!-- BARRA SUPERIOR -->
-    <div class="w-full max-w-4xl flex justify-between items-center mb-4">
-        <div id="user-badge" class="hidden items-center gap-2 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-full text-xs">
-            <img id="user-avatar" class="w-6 h-6 rounded-full" src="" alt="Avatar">
-            <span id="user-name" class="font-semibold text-emerald-400"></span>
+    <!-- CABEÇALHO / NAVBAR SUPERIOR -->
+    <header class="w-full max-w-5xl flex justify-between items-center mb-4 bg-slate-800/80 p-3 px-5 rounded-2xl border border-slate-700/80 shadow-lg">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-yellow-500/20 border border-yellow-500/50 flex items-center justify-center font-bold text-yellow-400 text-xs">
+                🇧🇷
+            </div>
+            <div>
+                <h1 class="text-sm font-black tracking-wide text-white uppercase">Justiça Eleitoral</h1>
+                <p class="text-[10px] text-slate-400 font-semibold">Urna Eletrônica</p>
+            </div>
         </div>
-        <div class="flex gap-2">
-            <button onclick="abrirApuracaoPublica()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 px-4 rounded-lg shadow transition flex items-center gap-1.5">
-                📊 Resultados / Apuração
+
+        <div class="flex items-center gap-3">
+            <div id="user-badge" class="hidden items-center gap-2 bg-slate-900/90 border border-slate-700 px-3 py-1.5 rounded-full">
+                <img id="user-avatar" class="w-6 h-6 rounded-full border border-indigo-500" src="" alt="Avatar">
+                <span id="user-name" class="font-bold text-indigo-300 text-xs"></span>
+            </div>
+
+            <button onclick="abrirApuracaoPublica()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs py-2 px-4 rounded-xl shadow-lg shadow-indigo-600/30 transition flex items-center gap-1.5">
+                📊 Apuração / Resultados
             </button>
-            <button onclick="abrirAdmin()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs py-2 px-3 rounded-lg border border-slate-700 transition">
+            <button onclick="abrirAdmin()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-bold text-xs py-2 px-3 rounded-xl border border-slate-600 transition">
                 🔒 Admin
             </button>
         </div>
-    </div>
+    </header>
 
-    <!-- TELA DE AUTENTICAÇÃO / BLOQUEIO POR HORÁRIO -->
-    <div id="tela-login" class="bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700 text-center max-w-md w-full">
-        <h1 class="text-2xl font-bold mb-2">🗳️ Urna Eletrônica</h1>
-        <p id="status-horario-votacao" class="text-amber-400 font-semibold text-xs mb-4"></p>
-        <p class="text-slate-300 text-sm mb-6">Autentique-se com a sua conta do Discord para poder votar.</p>
+    <!-- TELA DE AUTENTICAÇÃO / BLOQUEIO DE HORÁRIO -->
+    <main id="tela-login" class="my-auto w-full max-w-md bg-slate-800/90 p-8 rounded-3xl shadow-2xl border border-slate-700 text-center flex flex-col items-center">
+        <div class="w-16 h-16 bg-indigo-500/10 border-2 border-indigo-500/30 rounded-2xl flex items-center justify-center text-3xl mb-4 shadow-inner">
+            🗳️
+        </div>
+        <h2 class="text-2xl font-black text-white tracking-tight mb-1">Identificação do Eleitor</h2>
+        <p id="status-horario-votacao" class="text-amber-400 font-bold text-xs bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-lg my-3 w-full"></p>
+        <p class="text-slate-300 text-xs leading-relaxed mb-6">Para assegurar a integridade do sufrágio, faça login com sua conta do Discord para desbloquear a urna eletrônica.</p>
         
-        <button id="btn-login-discord" onclick="loginDiscord()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition">
-            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <button id="btn-login-discord" onclick="loginDiscord()" class="w-full bg-[#5865F2] hover:bg-[#4752C4] text-white font-extrabold py-3.5 px-5 rounded-2xl flex items-center justify-center gap-3 transition shadow-lg shadow-[#5865F2]/25">
+            <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
             Entrar com o Discord
         </button>
-    </div>
+    </main>
 
-    <!-- CORPO DA URNA -->
-    <div id="urna-container" class="hidden flex-col items-center">
-        <div class="urna-carcaca rounded-2xl p-6 flex flex-col md:flex-row gap-6 max-w-4xl w-full text-slate-900">
-            <!-- TELA LCD -->
-            <div class="lcd-bg border-4 border-slate-600 rounded-lg p-5 flex-1 flex flex-col justify-between min-h-[340px] relative font-mono shadow-inner">
+    <!-- ESTRUTURA FÍSICA DA URNA ELETRÔNICA -->
+    <main id="urna-container" class="hidden my-auto w-full max-w-4xl flex-col items-center">
+        <div class="urna-gabinete p-5 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 w-full">
+            
+            <!-- TELA LCD DA URNA (ESQUERDA) -->
+            <div class="lcd-frame rounded-xl p-5 md:p-6 flex-1 flex flex-col justify-between min-h-[360px] md:min-h-[400px] relative">
                 <div>
-                    <h3 class="text-xs font-bold uppercase tracking-widest text-slate-700">SEU VOTO VAI PARA:</h3>
-                    <h2 id="cargo-nome" class="text-xl font-extrabold uppercase mt-1 mb-4 text-black">PRESIDENTE</h2>
-                    
-                    <div class="flex items-center gap-2 my-2">
-                        <span class="text-sm font-bold">Número:</span>
-                        <div id="numeros-box" class="flex gap-2"></div>
+                    <!-- Rótulo Superior -->
+                    <div class="text-[11px] md:text-xs font-bold uppercase tracking-widest text-slate-800 border-b border-slate-700/40 pb-1">
+                        SEU VOTO VAI PARA
                     </div>
                     
-                    <div id="dados-candidato" class="text-sm mt-4 leading-relaxed"></div>
+                    <!-- Cargo Atual -->
+                    <h2 id="cargo-nome" class="text-xl md:text-2xl font-black uppercase mt-2 mb-4 text-black tracking-wider">
+                        PRESIDENTE
+                    </h2>
+
+                    <!-- Quadro dos Números -->
+                    <div class="flex items-center gap-3 my-4">
+                        <span class="text-xs md:text-sm font-bold uppercase text-slate-900">Número:</span>
+                        <div id="numeros-box" class="flex gap-2"></div>
+                    </div>
+
+                    <!-- Informações do Candidato -->
+                    <div id="dados-candidato" class="text-xs md:text-sm mt-4 space-y-1.5 font-bold text-black"></div>
                 </div>
 
-                <div id="foto-candidato" class="absolute top-4 right-4 border-2 border-slate-700 bg-white"></div>
-                
-                <div class="border-t-2 border-slate-700 pt-2 text-[10px] uppercase text-slate-700">
+                <!-- Quadro da Foto Oficial do Candidato -->
+                <div id="foto-container" class="absolute top-5 right-5 hidden flex-col items-center border-2 border-black bg-slate-200/90 p-1 shadow-md">
+                    <img id="foto-candidato-img" src="" class="w-20 h-24 md:w-24 md:h-28 object-cover border border-slate-400" alt="Foto Candidato">
+                    <span id="foto-candidato-rotulo" class="text-[9px] font-black uppercase mt-1 text-black">Presidente</span>
+                </div>
+
+                <!-- Rodapé Instruções LCD -->
+                <div class="border-t-2 border-slate-800/80 pt-2 text-[10px] md:text-[11px] uppercase text-slate-900 font-bold leading-tight">
                     Aperte a tecla:<br>
-                    <strong>VERDE</strong> para CONFIRMAR<br>
-                    <strong>LARANJA</strong> para REINICIAR (CORRIGIR)
+                    <span class="text-black font-extrabold">VERDE</span> para <span class="font-extrabold">CONFIRMAR</span> este voto<br>
+                    <span class="text-black font-extrabold">LARANJA</span> para <span class="font-extrabold">REINICIAR</span> (CORRIGIR)
                 </div>
 
-                <div id="tela-fim" class="hidden absolute inset-0 lcd-bg flex-col items-center justify-center font-bold text-6xl text-black z-20">
-                    FIM
+                <!-- Tela de FIM (Encerrado) -->
+                <div id="tela-fim" class="hidden absolute inset-0 lcd-frame flex-col items-center justify-center font-black text-6xl md:text-8xl text-black z-20 rounded-xl tracking-tighter">
+                    F I M
                 </div>
             </div>
 
-            <!-- TECLADO NUMÉRICO -->
-            <div class="bg-neutral-800 p-5 rounded-2xl flex flex-col gap-4 w-full md:w-72 shadow-2xl border-b-8 border-neutral-950">
-                <div class="text-center text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">JUSTIÇA ELEITORAL</div>
-                <div class="grid grid-cols-3 gap-3">
-                    <button onclick="digitar('1')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">1</button>
-                    <button onclick="digitar('2')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">2</button>
-                    <button onclick="digitar('3')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">3</button>
-                    <button onclick="digitar('4')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">4</button>
-                    <button onclick="digitar('5')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">5</button>
-                    <button onclick="digitar('6')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">6</button>
-                    <button onclick="digitar('7')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">7</button>
-                    <button onclick="digitar('8')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">8</button>
-                    <button onclick="digitar('9')" class="btn-tecla py-3 rounded-lg shadow font-bold text-xl">9</button>
-                    <button onclick="digitar('0')" class="col-start-2 btn-tecla py-3 rounded-lg shadow font-bold text-xl">0</button>
+            <!-- TECLADO FÍSICO DA URNA (DIREITA) -->
+            <div class="bg-neutral-900 p-6 rounded-2xl flex flex-col justify-between w-full md:w-80 shadow-2xl border-2 border-neutral-800">
+                <!-- Brasão / Logo Justiça Eleitoral -->
+                <div class="flex items-center justify-center gap-2 mb-4 pb-2 border-b border-neutral-800">
+                    <div class="text-xl">🇧🇷</div>
+                    <div class="text-center">
+                        <div class="text-[11px] font-black text-slate-300 tracking-widest uppercase">JUSTIÇA ELEITORAL</div>
+                        <div class="text-[8px] font-bold text-slate-500 uppercase tracking-wider">TECLADO OFICIAL</div>
+                    </div>
                 </div>
-                <div class="grid grid-cols-3 gap-2 mt-2">
-                    <button onclick="votarBranco()" class="bg-white hover:bg-slate-100 text-black font-bold py-3 rounded shadow border-b-4 border-slate-300 text-[10px]">BRANCO</button>
-                    <button onclick="corrige()" class="bg-amber-500 hover:bg-amber-400 text-black font-bold py-3 rounded shadow border-b-4 border-amber-700 text-[10px]">CORRIGE</button>
-                    <button onclick="confirma()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded shadow border-b-4 border-emerald-800 text-[10px]">CONFIRMA</button>
+
+                <!-- Grade Numérica -->
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                    <button onclick="digitar('1')" class="btn-tecla-num py-3.5 rounded-xl text-2xl">1</button>
+                    <button onclick="digitar('2')" class="btn-tecla-num py-3.5 rounded-xl text-2xl">2</button>
+                    <button onclick="digitar('3')" class="btn-tecla-num py-3.5 rounded-xl text-2xl">3</button>
+                    <button onclick="digitar('4')" class="btn-tecla-num py-3.5 rounded-xl text-2xl">4</button>
+                    <button onclick="digitar('5')" class="btn-tecla-num py-3.5 rounded-xl text-2xl">5</button>
+                    <button onclick="digitar('6')" class="btn-tecla-num py-3.5 rounded-xl text-2xl">6</button>
+                    <button onclick="digitar('7')" class="btn-tecla-num py-3.5 rounded-xl text-2xl">7</button>
+                    <button onclick="digitar('8')" class="btn-tecla-num py-3.5 rounded-xl text-2xl">8</button>
+                    <button onclick="digitar('9')" class="btn-tecla-num py-3.5 rounded-xl text-2xl">9</button>
+                    <button onclick="digitar('0')" class="col-start-2 btn-tecla-num py-3.5 rounded-xl text-2xl">0</button>
+                </div>
+
+                <!-- Teclas Especiais de Ação -->
+                <div class="grid grid-cols-3 gap-2.5">
+                    <button onclick="votarBranco()" class="btn-tecla-branco py-3 rounded-xl text-[10px] md:text-[11px] tracking-wider">BRANCO</button>
+                    <button onclick="corrige()" class="btn-tecla-corrige py-3 rounded-xl text-[10px] md:text-[11px] tracking-wider">CORRIGE</button>
+                    <button onclick="confirma()" class="btn-tecla-confirma py-3 rounded-xl text-[10px] md:text-[11px] tracking-wider">CONFIRMA</button>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
     <!-- PAINEL PÚBLICO DE APURAÇÃO (ESTILO RESULTADOS TSE) -->
-    <div id="modal-apuracao" class="hidden fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-4xl w-full max-h-[90vh] flex flex-col shadow-2xl">
+    <div id="modal-apuracao" class="hidden fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-3 md:p-6">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-5xl w-full max-h-[92vh] flex flex-col shadow-2xl">
             
-            <!-- HEADER DA APURAÇÃO -->
-            <div class="bg-slate-800/60 rounded-xl p-4 mb-6 border border-slate-700/50 flex flex-wrap justify-between items-center gap-4">
+            <!-- HEADER DO PAINEL DA APURAÇÃO -->
+            <div class="bg-slate-800/80 rounded-2xl p-5 mb-6 border border-slate-700/60 flex flex-wrap justify-between items-center gap-4">
                 <div>
-                    <h2 id="apuracao-porcentagem-secoes" class="text-2xl font-extrabold text-white">0,00% das seções totalizadas</h2>
-                    <p class="text-xs text-indigo-400 font-medium mt-0.5">(Horário de Brasília)</p>
-                    <p id="apuracao-ultima-atualizacao" class="text-xs text-slate-400 mt-1">Última atualização: <span class="font-semibold text-slate-300">Aguardando início</span></p>
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <h2 id="apuracao-porcentagem-secoes" class="text-xl md:text-2xl font-black text-white">0,00% das seções totalizadas</h2>
+                    </div>
+                    <p class="text-xs text-indigo-400 font-bold">Horário de Brasília • Sistema Oficial de Divulgação</p>
+                    <p id="apuracao-ultima-atualizacao" class="text-xs text-slate-400 mt-1">Última atualização: <span class="font-semibold text-slate-200">Aguardando...</span></p>
                 </div>
-                <button onclick="carregarResultadosApuracao()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs font-bold py-2 px-4 rounded-lg flex items-center gap-2 border border-slate-600 transition">
-                    🔄 Atualizar
+                <button onclick="carregarResultadosApuracao()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-black py-2.5 px-4 rounded-xl flex items-center gap-2 shadow-lg shadow-indigo-600/30 transition">
+                    🔄 Atualizar Apuração
                 </button>
             </div>
 
-            <!-- CONTEÚDO DOS CARDS DOS CANDIDATOS -->
-            <div id="apuracao-conteudo" class="overflow-y-auto flex-1 pr-2 space-y-6"></div>
+            <!-- CARDS DOS CANDIDATOS -->
+            <div id="apuracao-conteudo" class="overflow-y-auto custom-scroll flex-1 pr-2 space-y-6"></div>
 
-            <button onclick="fecharModais()" class="mt-4 bg-slate-800 hover:bg-slate-700 text-slate-300 px-6 py-2 rounded-xl text-xs font-bold border border-slate-700 self-center">Fechar</button>
+            <!-- BOTÃO FECHAR -->
+            <button onclick="fecharModais()" class="mt-5 bg-slate-800 hover:bg-slate-700 text-slate-300 px-6 py-2.5 rounded-xl text-xs font-bold border border-slate-700 self-center transition">
+                Fechar Apuração
+            </button>
         </div>
     </div>
 
-    <!-- MODAL ADMIN -->
+    <!-- PAINEL ADMIN -->
     <div id="modal-admin" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 max-w-lg w-full">
-            <h2 class="text-xl font-bold mb-2 text-emerald-400">🔒 Painel do Administrador</h2>
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <h2 class="text-xl font-black mb-1 text-emerald-400 flex items-center gap-2">
+                🔒 Administrador da Urna
+            </h2>
+            <p class="text-xs text-slate-400 mb-4">Acesso restrito para auditoria e gestão da eleição.</p>
+            
             <div id="admin-auth">
-                <input type="password" id="admin-pin" class="bg-slate-900 border border-slate-700 rounded p-2 w-full text-center text-lg mb-4 text-white" placeholder="PIN Secreto">
-                <button onclick="autenticarAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-bold py-2 rounded">Acessar</button>
+                <input type="password" id="admin-pin" class="bg-slate-900 border border-slate-700 rounded-xl p-3 w-full text-center text-xl tracking-widest mb-4 text-white focus:outline-none focus:border-indigo-500 font-mono" placeholder="PIN Secreto">
+                <button onclick="autenticarAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-500 font-extrabold py-3 rounded-xl text-sm transition">Acessar Painel</button>
             </div>
-            <div id="admin-conteudo" class="hidden text-sm">
-                <h3 class="font-bold mb-2 text-slate-200">Eleitores que Votaram:</h3>
-                <div id="lista-eleitores" class="bg-slate-900 p-3 rounded max-h-40 overflow-y-auto font-mono text-xs text-slate-300 mb-4 border border-slate-700"></div>
-                <button onclick="zerarEleicao()" class="bg-red-600 hover:bg-red-500 px-3 py-1.5 rounded text-xs font-bold">Zerar Urna</button>
+
+            <div id="admin-conteudo" class="hidden text-sm space-y-4">
+                <div>
+                    <h3 class="font-bold text-xs uppercase text-slate-400 mb-2">Eleitores Registrados:</h3>
+                    <div id="lista-eleitores" class="bg-slate-900 p-3 rounded-xl max-h-48 overflow-y-auto custom-scroll font-mono text-xs text-slate-300 border border-slate-700 space-y-1"></div>
+                </div>
+                <button onclick="zerarEleicao()" class="w-full bg-red-600/20 hover:bg-red-600 border border-red-500 text-red-300 hover:text-white font-extrabold py-2.5 rounded-xl text-xs transition">
+                    ⚠️ Zerar Urna e Apagar Votos
+                </button>
             </div>
-            <button onclick="fecharModais()" class="mt-4 text-xs text-slate-400 hover:underline block text-center w-full">Fechar</button>
+            
+            <button onclick="fecharModais()" class="mt-4 text-xs text-slate-400 hover:text-slate-200 block text-center w-full transition">Fechar</button>
         </div>
     </div>
+
+    <!-- RODAPÉ INFORMATIVO -->
+    <footer class="mt-4 text-center text-[10px] text-slate-500 font-semibold">
+        Justiça Eleitoral Virtual • Desenvolvido para simulações e eleições comunitárias
+    </footer>
 
     <script>
         // =========================================================================
-        // CONFIGURAÇÕES DE DATAS, HORÁRIOS E CLIENT ID
+        // CONFIGURAÇÕES GERAIS E HORÁRIOS DA ELEIÇÃO
         // =========================================================================
-        const DISCORD_CLIENT_ID = "1540492488534523974"; 
-        const MULTIPLICADOR_VOTOS = 4;
+        const DISCORD_CLIENT_ID = "1540492488534523974"; // Cole o Client ID do Discord OAuth2
+        const MULTIPLICADOR_VOTOS = 5; // Multiplicador conforme regra
 
-        // DATAS E HORÁRIOS (Formato: YYYY-MM-DDTHH:mm:ss)
+        // Horários da Eleição (Formato ISO: YYYY-MM-DDTHH:mm:ss)
         const HORARIOS_ELEICAO = {
-            inicioVotacao:  "2026-10-01T18:20:00", // Início da Votação
-            fimVotacao:     "2026-10-01T18:25:00", // Fim da Votação
-            inicioApuracao: "2026-10-01T18:27:00", // Liberação da Apuração
-            fimApuracao:    "2026-10-01T18:30:00"  // Fechamento Total da Apuração
+            inicioVotacao:  "2026-10-01T18:41:00",
+            fimVotacao:     "2026-10-01T18:43:00",
+            inicioApuracao: "2026-10-01T18:45:00",
+            fimApuracao:    "2026-10-01T18:47:00"
         };
 
+// Candidatos Cadastrados
         const etapas = [
+            {
+                cargo: "GOVERNADOR",
+                digitos: 2,
+                candidatos: {
+                    "22": { 
+                        nome: "ALEX SANTANA", 
+                        partido: "PARTIDO LIBERAL", 
+                        foto: "https://cdn.discordapp.com/attachments/1443052039797211156/1555331370728030340/file_00000000427c820ea5a5763fe6ea7b44.png?backend=b2&ex=6ac022b7&is=6abed137&hm=c1abdd5e93b1cfea01c88065da0d0e4e559eca854dc6c03d3dde3bfbff722166&" 
+                    }
+                }
+            },
             {
                 cargo: "PRESIDENTE",
                 digitos: 2,
                 candidatos: {
-                    "14": { nome: "NICO GONÇALVES", partido: "MISSÃO", foto: "https://via.placeholder.com/100?text=Japa" },
-                    "22": { nome: "AGROTECO", partido: "PL", foto: "https://via.placeholder.com/100?text=Luiza" }
+                    "14": { 
+                        nome: "NICO GONÇALVES", 
+                        partido: "MISSÃO", 
+                        foto: "https://cdn.discordapp.com/attachments/1553953978570637412/1555333104925671494/image.png?backend=b2&ex=6ac02454&is=6abed2d4&hm=4493ef977079e11cfb312a3111ca7fa1e8803aa79a1dfa1670fc6e87c924af98&" 
+                    },
+                    "22": { 
+                        nome: "AGROTECO", 
+                        partido: "PL", 
+                        foto: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80" 
+                    }
                 }
             }
         ];
@@ -184,18 +361,39 @@
         let numeroDigitado = "";
         let votoBranco = false;
 
+        // =========================================================================
+        // GERADOR DE ÁUDIO SINTETIZADO (WEB AUDIO API - SOM REAL DA URNA)
+        // =========================================================================
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function tocarSom(freq, dur) {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.frequency.value = freq; osc.start();
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + dur);
+
+        function emitirTom(frequencia, duracao, delay = 0) {
+            setTimeout(() => {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(frequencia, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start();
+                osc.stop(audioCtx.currentTime + duracao);
+            }, delay * 1000);
         }
-        function tocarBip() { tocarSom(1200, 0.08); }
-        function tocarConfirma() { tocarSom(800, 0.15); setTimeout(() => tocarSom(1200, 0.5), 150); }
+
+        function tocarBipTecla() {
+            emitirTom(1350, 0.07);
+        }
+
+        // Som característico longo "Tuu-tuu-tuu" oficial da urna eletrônica
+        function tocarSomConfirmaUrna() {
+            emitirTom(450, 0.15, 0);
+            emitirTom(450, 0.15, 0.20);
+            emitirTom(450, 0.45, 0.40);
+        }
 
         // =========================================================================
         // VALIDAÇÃO DE HORÁRIO DA VOTAÇÃO
@@ -206,22 +404,22 @@
             const fim = new Date(HORARIOS_ELEICAO.fimVotacao);
 
             if (agora < inicio) {
-                document.getElementById("status-horario-votacao").innerText = `⏳ Votação abre em: ${inicio.toLocaleString('pt-BR')}`;
+                document.getElementById("status-horario-votacao").innerText = `⏳ Votação programada para iniciar em: ${inicio.toLocaleString('pt-BR')}`;
                 return false;
             } else if (agora > fim) {
-                document.getElementById("status-horario-votacao").innerText = `🔴 Votação encerrada às ${fim.toLocaleTimeString('pt-BR')}`;
+                document.getElementById("status-horario-votacao").innerText = `🔴 Votação encerrada oficialmente às ${fim.toLocaleTimeString('pt-BR')}`;
                 return false;
             }
-            document.getElementById("status-horario-votacao").innerText = `🟢 Votação Aberta até às ${fim.toLocaleTimeString('pt-BR')}`;
+            document.getElementById("status-horario-votacao").innerText = `🟢 Votação ABERTA até às ${fim.toLocaleTimeString('pt-BR')}`;
             return true;
         }
 
         // =========================================================================
-        // AUTENTICAÇÃO DISCORD
+        // INTEGRACAO DISCORD OAUTH2
         // =========================================================================
         function loginDiscord() {
             if (!estaNoHorarioDeVotacao()) {
-                alert("A votação não está aberta neste momento.");
+                alert("A votação não está disponível neste horário.");
                 return;
             }
             const redirectUri = window.location.origin + window.location.pathname;
@@ -265,12 +463,15 @@
             document.getElementById("user-badge").classList.remove("hidden");
             document.getElementById("user-badge").classList.add("flex");
             document.getElementById("user-name").innerText = usuarioDiscord.username;
-            document.getElementById("user-avatar").src = `https://cdn.discordapp.com/avatars/${usuarioDiscord.id}/${usuarioDiscord.avatar}.png`;
+            document.getElementById("user-avatar").src = usuarioDiscord.avatar 
+                ? `https://cdn.discordapp.com/avatars/${usuarioDiscord.id}/${usuarioDiscord.avatar}.png`
+                : `https://cdn.discordapp.com/embed/avatars/0.png`;
 
             if (jaVotou) {
                 document.getElementById("tela-login").innerHTML = `
-                    <h1 class="text-2xl font-bold text-amber-400 mb-2">VOTO REGISTRADO</h1>
-                    <p class="text-slate-300 text-sm">A conta <strong>${usuarioDiscord.username}</strong> já participou desta eleição.</p>
+                    <div class="w-16 h-16 bg-emerald-500/10 border-2 border-emerald-500/30 rounded-2xl flex items-center justify-center text-3xl mb-3">✅</div>
+                    <h2 class="text-xl font-black text-emerald-400 mb-1">VOTO REGISTRADO</h2>
+                    <p class="text-slate-300 text-xs">O eleitor <strong>${usuarioDiscord.username}</strong> já exerceu seu voto nesta urna.</p>
                 `;
                 return;
             }
@@ -288,7 +489,7 @@
         }
 
         // =========================================================================
-        // LÓGICA DA URNA
+        // CONTROLADOR DA TELA LCD DA URNA
         // =========================================================================
         function atualizarTela() {
             const etapa = etapas[etapaAtual];
@@ -296,28 +497,36 @@
 
             const box = document.getElementById("numeros-box");
             const dados = document.getElementById("dados-candidato");
-            const foto = document.getElementById("foto-candidato");
+            const fotoContainer = document.getElementById("foto-container");
+            const fotoImg = document.getElementById("foto-candidato-img");
 
-            box.innerHTML = ""; foto.innerHTML = ""; dados.innerHTML = "";
+            box.innerHTML = ""; 
+            dados.innerHTML = "";
+            fotoContainer.classList.add("hidden");
 
             if (votoBranco) {
-                dados.innerHTML = "<br><strong class='text-lg'>VOTO EM BRANCO</strong>";
+                dados.innerHTML = "<div class='text-lg font-black tracking-widest mt-4'>VOTO EM BRANCO</div>";
                 return;
             }
 
             for (let i = 0; i < etapa.digitos; i++) {
                 const char = numeroDigitado[i] || "";
-                const pisca = (i === numeroDigitado.length) ? "pisca" : "";
-                box.innerHTML += `<div class="w-9 h-11 border-2 border-slate-800 flex items-center justify-center font-bold text-2xl bg-white/80 ${pisca}">${char}</div>`;
+                const pisca = (i === numeroDigitado.length) ? "cursor-pisca" : "";
+                box.innerHTML += `<div class="w-8 h-10 md:w-9 md:h-11 border-2 border-black flex items-center justify-center font-black text-xl md:text-2xl bg-white/90 ${pisca}">${char}</div>`;
             }
 
             if (numeroDigitado.length === etapa.digitos) {
                 if (etapa.candidatos[numeroDigitado]) {
                     const cand = etapa.candidatos[numeroDigitado];
-                    dados.innerHTML = `Nome: <strong>${cand.nome}</strong><br>Partido: <strong>${cand.partido}</strong>`;
-                    foto.innerHTML = `<img src="${cand.foto}" class="w-20 h-24 object-cover" alt="Foto">`;
+                    dados.innerHTML = `
+                        <div>Nome: <span class="uppercase font-black">${cand.nome}</span></div>
+                        <div>Partido: <span class="uppercase font-black">${cand.partido}</span></div>
+                    `;
+                    fotoImg.src = cand.foto;
+                    fotoContainer.classList.remove("hidden");
+                    fotoContainer.classList.add("flex");
                 } else {
-                    dados.innerHTML = "<br><strong class='text-lg'>VOTO NULO</strong>";
+                    dados.innerHTML = "<div class='text-lg font-black tracking-widest mt-4'>VOTO NULO</div>";
                 }
             }
         }
@@ -325,20 +534,20 @@
         function digitar(num) {
             const etapa = etapas[etapaAtual];
             if (votoBranco || numeroDigitado.length >= etapa.digitos) return;
-            tocarBip();
+            tocarBipTecla();
             numeroDigitado += num;
             atualizarTela();
         }
 
         function votarBranco() {
-            tocarBip();
+            tocarBipTecla();
             numeroDigitado = "";
             votoBranco = true;
             atualizarTela();
         }
 
         function corrige() {
-            tocarBip();
+            tocarBipTecla();
             numeroDigitado = "";
             votoBranco = false;
             atualizarTela();
@@ -348,10 +557,9 @@
             const etapa = etapas[etapaAtual];
 
             if (numeroDigitado.length === etapa.digitos || votoBranco) {
-                tocarBip();
-
                 let opcaoVoto = votoBranco ? "BRANCO" : (etapa.candidatos[numeroDigitado] ? numeroDigitado : "NULO");
 
+                // Grava os votos com o multiplicador 4x
                 const bancoVotos = JSON.parse(localStorage.getItem("banco_votos") || "{}");
                 if (!bancoVotos[etapa.cargo]) bancoVotos[etapa.cargo] = {};
                 
@@ -363,9 +571,10 @@
                 votoBranco = false;
 
                 if (etapaAtual < etapas.length) {
+                    tocarBipTecla();
                     atualizarTela();
                 } else {
-                    tocarConfirma();
+                    tocarSomConfirmaUrna();
 
                     const eleitoresVotaram = JSON.parse(localStorage.getItem("eleitores_que_votaram") || "[]");
                     eleitoresVotaram.push({
@@ -382,7 +591,7 @@
         }
 
         // =========================================================================
-        // APURAÇÃO VISUAL PÚBLICA (COM CARDS DE CANDIDATOS)
+        // APURAÇÃO VISUAL PÚBLICA (ESTILO TSE)
         // =========================================================================
         function abrirApuracaoPublica() {
             document.getElementById("modal-apuracao").classList.remove("hidden");
@@ -398,23 +607,23 @@
             const ultimaAtualizacaoElem = document.getElementById("apuracao-ultima-atualizacao");
             const conteudoElem = document.getElementById("apuracao-conteudo");
 
-            // Define o horário exibido
-            ultimaAtualizacaoElem.innerHTML = `Última atualização: <span class="font-semibold text-slate-300">${agora.toLocaleTimeString('pt-BR')}</span>`;
+            ultimaAtualizacaoElem.innerHTML = `Última atualização: <span class="font-semibold text-slate-200">${agora.toLocaleTimeString('pt-BR')}</span>`;
 
-            // Caso 1: Antes do início da apuração
+            // Caso 1: Antes do horário de início da apuração
             if (agora < inicioAp) {
                 secoesElem.innerText = "0,00% das seções totalizadas";
                 conteudoElem.innerHTML = `
-                    <div class="text-center py-12 border border-dashed border-slate-700 rounded-2xl">
-                        <p class="text-amber-400 font-bold text-lg mb-1">⏳ Apuração Não Iniciada</p>
-                        <p class="text-xs text-slate-400">A apuração oficial dos votos começará às <strong>${inicioAp.toLocaleString('pt-BR')}</strong>.</p>
+                    <div class="text-center py-16 border-2 border-dashed border-slate-800 rounded-3xl bg-slate-900/50">
+                        <div class="text-4xl mb-3">⏳</div>
+                        <h3 class="text-amber-400 font-extrabold text-lg mb-1">Apuração Não Iniciada</h3>
+                        <p class="text-xs text-slate-400 max-w-sm mx-auto">Os dados da apuração oficial serão liberados e atualizados publicamente a partir das <strong>${inicioAp.toLocaleString('pt-BR')}</strong>.</p>
                     </div>`;
                 return;
             }
 
-            // Caso 2: Em andamento ou Finalizada
+            // Caso 2: Em andamento ou Concluída
             if (agora >= fimAp) {
-                secoesElem.innerText = "100,00% das seções totalizadas (Finalizada)";
+                secoesElem.innerText = "100,00% das seções totalizadas (Eleição Concluída)";
             } else {
                 secoesElem.innerText = "Apuração em Andamento";
             }
@@ -425,52 +634,49 @@
             etapas.forEach(etapa => {
                 const votosCargo = bancoVotos[etapa.cargo] || {};
                 
-                // Calcula total de votos para o cargo
                 let totalVotos = 0;
                 for (let opc in votosCargo) totalVotos += votosCargo[opc];
 
                 htmlCompleto += `
                     <div>
-                        <div class="flex items-center gap-2 mb-4">
-                            <h3 class="text-xl font-bold text-white">${etapa.cargo}</h3>
-                            <span class="text-xs bg-slate-800 text-slate-400 px-2.5 py-1 rounded-full border border-slate-700 font-mono">${totalVotos} votos computados</span>
+                        <div class="flex items-center justify-between gap-2 mb-4 border-b border-slate-800 pb-2">
+                            <h3 class="text-lg font-black text-white uppercase tracking-wider">${etapa.cargo}</h3>
+                            <span class="text-xs bg-slate-800 text-indigo-400 px-3 py-1 rounded-full border border-slate-700 font-mono font-bold">${totalVotos} votos computados</span>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 `;
 
-                // Renderiza cada candidato cadastrado na etapa
                 for (let num in etapa.candidatos) {
                     const cand = etapa.candidatos[num];
                     const qtdVotos = votosCargo[num] || 0;
                     const porc = totalVotos > 0 ? ((qtdVotos / totalVotos) * 100).toFixed(2) : "0,00";
 
                     htmlCompleto += `
-                        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 flex flex-col justify-between hover:border-indigo-500/50 transition shadow-lg">
+                        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-5 flex flex-col justify-between hover:border-indigo-500/50 transition shadow-lg relative overflow-hidden">
                             <div class="flex items-start justify-between gap-3 mb-4">
-                                <img src="${cand.foto}" class="w-16 h-16 rounded-full object-cover border-2 border-indigo-500 shadow-md" alt="${cand.nome}">
+                                <img src="${cand.foto}" class="w-16 h-16 rounded-2xl object-cover border-2 border-indigo-500 shadow-md" alt="${cand.nome}">
                                 <div class="text-right">
-                                    <div class="text-3xl font-extrabold text-indigo-400 font-mono">${porc}%</div>
-                                    <div class="text-xs text-slate-400 mt-0.5">${qtdVotos} votos</div>
+                                    <div class="text-3xl font-black text-indigo-400 font-mono">${porc}%</div>
+                                    <div class="text-xs font-semibold text-slate-400 mt-0.5">${qtdVotos} votos</div>
                                 </div>
                             </div>
                             <div>
-                                <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">${cand.partido} • ${num}</div>
-                                <div class="text-lg font-black text-white uppercase tracking-tight mt-0.5">${cand.nome}</div>
+                                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">${cand.partido} • N° ${num}</div>
+                                <div class="text-base font-black text-white uppercase tracking-tight mt-0.5">${cand.nome}</div>
                             </div>
                         </div>
                     `;
                 }
 
-                // Exibe contagem de Brancos e Nulos no rodapé da etapa
                 const brancos = votosCargo["BRANCO"] || 0;
                 const nulos = votosCargo["NULO"] || 0;
 
                 htmlCompleto += `
                         </div>
-                        <div class="flex gap-4 mt-3 text-xs text-slate-400 bg-slate-800/30 p-3 rounded-xl border border-slate-800">
-                            <span>Votos em Branco: <strong class="text-slate-200">${brancos}</strong></span>
+                        <div class="flex gap-6 mt-4 text-xs font-semibold text-slate-400 bg-slate-800/40 p-3.5 rounded-2xl border border-slate-800/80">
+                            <span>Votos em Branco: <strong class="text-white font-mono">${brancos}</strong></span>
                             <span>•</span>
-                            <span>Votos Nulos: <strong class="text-slate-200">${nulos}</strong></span>
+                            <span>Votos Nulos: <strong class="text-white font-mono">${nulos}</strong></span>
                         </div>
                     </div>
                 `;
@@ -479,34 +685,46 @@
             conteudoElem.innerHTML = htmlCompleto;
         }
 
-        // Auto-atualiza a apuração a cada 2 minutos
+        // Atualização automática a cada 2 minutos (120.000 ms)
         setInterval(carregarResultadosApuracao, 120000);
 
         // =========================================================================
-        // ADMIN
+        // ADMINISTRAÇÃO
         // =========================================================================
-        function abrirAdmin() { document.getElementById("modal-admin").classList.remove("hidden"); }
+        function abrirAdmin() { 
+            document.getElementById("modal-admin").classList.remove("hidden"); 
+        }
+
         function autenticarAdmin() {
-            if (document.getElementById("admin-pin").value === "0701") {
+            // Senha PIN do Painel Admin
+            if (document.getElementById("admin-pin").value === "1234") {
                 document.getElementById("admin-auth").classList.add("hidden");
                 document.getElementById("admin-conteudo").classList.remove("hidden");
                 const eleitores = JSON.parse(localStorage.getItem("eleitores_que_votaram") || "[]");
-                document.getElementById("lista-eleitores").innerHTML = eleitores.map(e => `<div>• ${e.username} (${e.id}) - ${e.data}</div>`).join("") || "Nenhum voto.";
-            } else { alert("PIN Incorreto!"); }
+                document.getElementById("lista-eleitores").innerHTML = eleitores.length > 0
+                    ? eleitores.map(e => `<div class="p-1 border-b border-slate-800 flex justify-between"><span>• ${e.username}</span> <span class="text-slate-500">${e.data}</span></div>`).join("")
+                    : "<div class='text-slate-500 text-center py-2'>Nenhum voto registrado.</div>";
+            } else { 
+                alert("PIN do Administrador incorreto!"); 
+            }
         }
+
         function zerarEleicao() {
-            if (confirm("Zerar todos os votos?")) {
+            if (confirm("ATENÇÃO: Deseja apagar todos os votos e reiniciar a eleição?")) {
                 localStorage.removeItem("banco_votos");
                 localStorage.removeItem("eleitores_que_votaram");
                 location.reload();
             }
         }
+
         function fecharModais() {
             document.getElementById("modal-apuracao").classList.add("hidden");
             document.getElementById("modal-admin").classList.add("hidden");
         }
 
-        verificarSessaoDiscord();
+        window.onload = function() {
+            verificarSessaoDiscord();
+        };
     </script>
 </body>
 </html>
