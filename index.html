@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urna Eletrônica Simulador</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="urna-container">
+        <!-- TELA DA URNA -->
+        <div class="tela">
+            <div class="tela-conteudo">
+                <div class="info-voto">
+                    <span class="cargo-titulo">SEU VOTO VAI PARA</span>
+                    <h2 id="cargo-nome">PRESIDENTE</h2>
+                    <div class="numeros-box" id="numeros-box"></div>
+                    <div class="dados-candidato" id="dados-candidato"></div>
+                </div>
+                <div class="foto-candidato" id="foto-candidato"></div>
+            </div>
+            <div class="instrucoes" id="instrucoes">
+                Aperte a tecla:<br>
+                <strong>CONFIRMA</strong> para CONFIRMAR este voto<br>
+                <strong>CORRIGE</strong> para REINICIAR este voto
+            </div>
+            <div class="tela-fim" id="tela-fim" style="display: none;">
+                <h1>FIM</h1>
+            </div>
+        </div>
+
+        <!-- TECLADO DA URNA -->
+        <div class="teclado">
+            <div class="marca">JUSTIÇA ELEITORAL</div>
+            <div class="teclas-numericas">
+                <button onclick="digitar('1')">1</button>
+                <button onclick="digitar('2')">2</button>
+                <button onclick="digitar('3')">3</button>
+                <button onclick="digitar('4')">4</button>
+                <button onclick="digitar('5')">5</button>
+                <button onclick="digitar('6')">6</button>
+                <button onclick="digitar('7')">7</button>
+                <button onclick="digitar('8')">8</button>
+                <button onclick="digitar('9')">9</button>
+                <button onclick="digitar('0')">0</button>
+            </div>
+            <div class="teclas-acoes">
+                <button class="btn-branco" onclick="votarBranco()">BRANCO</button>
+                <button class="btn-corrige" onclick="corrige()">CORRIGE</button>
+                <button class="btn-confirma" onclick="confirma()">CONFIRMA</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
