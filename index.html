@@ -3,55 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urna Eletrônica Simulador</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Urna Eletrônica com Autenticação Discord</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .pisca { animation: blink 1s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+    </style>
 </head>
-<body>
-    <div class="urna-container">
-        <!-- TELA DA URNA -->
-        <div class="tela">
-            <div class="tela-conteudo">
-                <div class="info-voto">
-                    <span class="cargo-titulo">SEU VOTO VAI PARA</span>
-                    <h2 id="cargo-nome">PRESIDENTE</h2>
-                    <div class="numeros-box" id="numeros-box"></div>
-                    <div class="dados-candidato" id="dados-candidato"></div>
-                </div>
-                <div class="foto-candidato" id="foto-candidato"></div>
-            </div>
-            <div class="instrucoes" id="instrucoes">
-                Aperte a tecla:<br>
-                <strong>CONFIRMA</strong> para CONFIRMAR este voto<br>
-                <strong>CORRIGE</strong> para REINICIAR este voto
-            </div>
-            <div class="tela-fim" id="tela-fim" style="display: none;">
-                <h1>FIM</h1>
-            </div>
+<body class="bg-slate-900 text-white min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Tela de Autenticação com Discord -->
+    <div id="tela-login" class="bg-slate-800 p-8 rounded-xl shadow-2xl border border-slate-700 text-center max-w-md w-full">
+        <h1 class="text-2xl font-bold mb-4">🗳️ Urna Eletrônica</h1>
+        <p class="text-slate-300 text-sm mb-6">Para garantir a segurança e evitar fraudes, é necessário conectar a sua conta do Discord para votar.</p>
+        
+        <button onclick="loginDiscord()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 transition">
+            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+            Entrar com o Discord
+        </button>
+    </div>
+
+    <!-- Interface da Urna (Inicia Oculta) -->
+    <div id="urna-container" class="hidden flex-col items-center gap-4">
+        <!-- Indicador do Utilizador Autenticado -->
+        <div id="user-info" class="bg-slate-800 px-4 py-2 rounded-full border border-slate-700 flex items-center gap-3">
+            <img id="user-avatar" class="w-8 h-8 rounded-full" src="" alt="Avatar">
+            <span class="text-sm font-medium">Eleitor: <strong id="user-name"></strong></span>
         </div>
 
-        <!-- TECLADO DA URNA -->
-        <div class="teclado">
-            <div class="marca">JUSTIÇA ELEITORAL</div>
-            <div class="teclas-numericas">
-                <button onclick="digitar('1')">1</button>
-                <button onclick="digitar('2')">2</button>
-                <button onclick="digitar('3')">3</button>
-                <button onclick="digitar('4')">4</button>
-                <button onclick="digitar('5')">5</button>
-                <button onclick="digitar('6')">6</button>
-                <button onclick="digitar('7')">7</button>
-                <button onclick="digitar('8')">8</button>
-                <button onclick="digitar('9')">9</button>
-                <button onclick="digitar('0')">0</button>
+        <!-- Estrutura da Urna Eletrônica -->
+        <div class="bg-slate-200 text-slate-900 p-6 rounded-2xl shadow-2xl flex flex-col md:flex-row gap-6 border-4 border-slate-400 max-w-4xl w-full">
+            <!-- Tela LCD -->
+            <div class="bg-neutral-100 border-4 border-slate-400 rounded-lg p-4 flex-1 flex flex-col justify-between min-h-[300px] relative">
+                <div>
+                    <h2 id="cargo-nome" class="text-lg font-bold text-slate-600 uppercase mb-4">SELEÇÃO DE CARGO</h2>
+                    <div id="numeros-box" class="flex gap-2 my-4"></div>
+                    <div id="dados-candidato" class="text-slate-800 text-sm mt-2"></div>
+                </div>
+                <div id="foto-candidato" class="absolute top-4 right-4 border border-slate-300"></div>
+                <div id="tela-fim" class="hidden absolute inset-0 bg-neutral-100 flex-col items-center justify-center font-bold text-4xl text-slate-800">
+                    FIM
+                </div>
             </div>
-            <div class="teclas-acoes">
-                <button class="btn-branco" onclick="votarBranco()">BRANCO</button>
-                <button class="btn-corrige" onclick="corrige()">CORRIGE</button>
-                <button class="btn-confirma" onclick="confirma()">CONFIRMA</button>
+
+            <!-- Teclado Numérico -->
+            <div class="bg-slate-800 p-4 rounded-xl flex flex-col gap-3 w-full md:w-64">
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="digitar('1')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded shadow text-xl">1</button>
+                    <button onclick="digitar('2')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded shadow text-xl">2</button>
+                    <button onclick="digitar('3')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded shadow text-xl">3</button>
+                    <button onclick="digitar('4')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded shadow text-xl">4</button>
+                    <button onclick="digitar('5')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded shadow text-xl">5</button>
+                    <button onclick="digitar('6')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded shadow text-xl">6</button>
+                    <button onclick="digitar('7')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded shadow text-xl">7</button>
+                    <button onclick="digitar('8')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded shadow text-xl">8</button>
+                    <button onclick="digitar('9')" class="bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded shadow text-xl">9</button>
+                    <button onclick="digitar('0')" class="col-start-2 bg-neutral-900 hover:bg-neutral-700 text-white font-bold py-3 rounded shadow text-xl">0</button>
+                </div>
+                <div class="grid grid-cols-3 gap-2 mt-2">
+                    <button onclick="votarBranco()" class="bg-white hover:bg-slate-100 text-slate-900 font-bold py-2 rounded text-xs">BRANCO</button>
+                    <button onclick="corrige()" class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-2 rounded text-xs">CORRIGE</button>
+                    <button onclick="confirma()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded text-xs">CONFIRMA</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // =========================================================================
+        // CONFIGURAÇÕES
+        // =========================================================================
+        const DISCORD_CLIENT_ID = "1540492488534523974"; // Coloque o seu Client ID aqui
+        const REDIRECT_URI = window.location.origin + window.location.pathname;
+        const DISCORD_WEBHOOK_URL = ""; // (Opcional) Cole o Webhook aqui
+
+        const etapas = [
+            {
+                cargo: "PRESIDENTE",
+                digitos: 2,
+                candidatos: {
+                    "10": { nome: "Candidato Alfa", partido: "PA", foto: "https://via.placeholder.com/90x110?text=Pres+10" },
+                    "20": { nome: "Candidato Beta", partido: "PB", foto: "https://via.placeholder.com/90x110?text=Pres+20" }
+                }
+            }
+        ];
+
+        let usuarioDiscord = null;
+        let etapaAtual = 0;
+        let numeroDigitado = "";
+        let votoBranco = false;
+        let votosRegistrados = [];
+
+        // Sons (Web Audio API)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function tocarSom(freq, dur) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.frequency.value = freq; osc.start();
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            osc.stop(audioCtx.currentTime + dur);
+        }
+        function tocarBip() { tocarSom(1200, 0.08); }
+        function tocarConfirma() { tocarSom(800, 0.15); setTimeout(() => tocarSom(1200, 0.5), 150); }
+
+        // =========================================================================
+        // AUTENTICAÇÃO DISCORD (OAuth2 Implicit Grant)
+        // =========================================================================
+        function loginDiscord() {
+            const url = `https://discord.com/api/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=token&scope=identify`;
+            window.location.href = url;
+        }
+
+        function verificarAutenticacao() {
+            const fragment = new URLSearchParams(window.location.hash.slice(1));
+            const accessToken = fragment.get('access_token');
+
+            if (accessToken) {
+                // Limpa o hash na URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+
+                fetch('https://discord.com/api/users/@me', {
+                    headers: { authorization: `Bearer ${accessToken}` }
+                })
+                .then(res => res.json())
+                .then(user => {
+                    usuarioDiscord = user;
+                    validarEleitor();
+                })
+                .catch(err => console.error("Erro ao obter dados do Discord:", err));
+            }
+        }
+
+        function validarEleitor() {
+            if (!usuarioDiscord) return;
+
+            // Prevenção de voto duplo por ID do Discord
+            const eleitoresVotaram = JSON.parse(localStorage.getItem("eleitores_discord") || "[]");
+            
+            if (eleitoresVotaram.includes(usuarioDiscord.id)) {
+                document.getElementById("tela-login").innerHTML = `
+                    <h1 class="text-2xl font-bold text-red-500 mb-2">VOTO JÁ REGISTRADO!</h1>
+                    <p class="text-slate-300">A conta <strong>${usuarioDiscord.username}</strong> já participou nesta eleição.</p>
+                `;
+                return;
+            }
+
+            // Exibir interface da urna
+            document.getElementById("tela-login").classList.add("hidden");
+            document.getElementById("urna-container").classList.remove("hidden");
+            document.getElementById("urna-container").classList.add("flex");
+
+            document.getElementById("user-name").innerText = usuarioDiscord.username;
+            const avatarUrl = usuarioDiscord.avatar 
+                ? `https://cdn.discordapp.com/avatars/${usuarioDiscord.id}/${usuarioDiscord.avatar}.png` 
+                : 'https://cdn.discordapp.com/embed/avatars/0.png';
+            document.getElementById("user-avatar").src = avatarUrl;
+
+            atualizarTela();
+        }
+
+        // =========================================================================
+        // OPERAÇÃO DA URNA
+        // =========================================================================
+        function atualizarTela() {
+            const etapa = etapas[etapaAtual];
+            document.getElementById("cargo-nome").innerText = etapa.cargo;
+
+            const box = document.getElementById("numeros-box");
+            const dados = document.getElementById("dados-candidato");
+            const foto = document.getElementById("foto-candidato");
+
+            box.innerHTML = ""; foto.innerHTML = ""; dados.innerHTML = "";
+
+            if (votoBranco) {
+                dados.innerHTML = "<br><strong>VOTO EM BRANCO</strong>";
+                return;
+            }
+
+            for (let i = 0; i < etapa.digitos; i++) {
+                const char = numeroDigitado[i] || "";
+                const pisca = (i === numeroDigitado.length) ? "pisca" : "";
+                box.innerHTML += `<div class="w-10 h-12 border-2 border-slate-400 flex items-center justify-center font-bold text-2xl text-slate-800 bg-white ${pisca}">${char}</div>`;
+            }
+
+            if (numeroDigitado.length === etapa.digitos) {
+                if (etapa.candidatos[numeroDigitado]) {
+                    const cand = etapa.candidatos[numeroDigitado];
+                    dados.innerHTML = `Nome: <strong>${cand.nome}</strong><br>Partido: ${cand.partido}`;
+                    foto.innerHTML = `<img src="${cand.foto}" class="w-20 h-24 object-cover" alt="Foto">`;
+                } else {
+                    dados.innerHTML = "<br><strong>VOTO NULO</strong>";
+                }
+            }
+        }
+
+        function digitar(num) {
+            const etapa = etapas[etapaAtual];
+            if (votoBranco || numeroDigitado.length >= etapa.digitos) return;
+            tocarBip();
+            numeroDigitado += num;
+            atualizarTela();
+        }
+
+        function votarBranco() {
+            tocarBip();
+            numeroDigitado = "";
+            votoBranco = true;
+            atualizarTela();
+        }
+
+        function corrige() {
+            tocarBip();
+            numeroDigitado = "";
+            votoBranco = false;
+            atualizarTela();
+        }
+
+        function confirma() {
+            const etapa = etapas[etapaAtual];
+
+            if (numeroDigitado.length === etapa.digitos || votoBranco) {
+                tocarBip();
+
+                let votoTexto = votoBranco ? "BRANCO" : (etapa.candidatos[numeroDigitado] ? `${numeroDigitado} - ${etapa.candidatos[numeroDigitado].nome}` : `${numeroDigitado} - NULO`);
+
+                votosRegistrados.push({ cargo: etapa.cargo, voto: votoTexto });
+
+                etapaAtual++;
+                numeroDigitado = "";
+                votoBranco = false;
+
+                if (etapaAtual < etapas.length) {
+                    atualizarTela();
+                } else {
+                    // Fim da votação
+                    tocarConfirma();
+
+                    // Guardar ID no localStorage para impedir voto duplo
+                    const eleitoresVotaram = JSON.parse(localStorage.getItem("eleitores_discord") || "[]");
+                    eleitoresVotaram.push(usuarioDiscord.id);
+                    localStorage.setItem("eleitores_discord", JSON.stringify(eleitoresVotaram));
+
+                    // Enviar relatório ao Webhook do Discord (com a identificação do eleitor)
+                    if (DISCORD_WEBHOOK_URL) {
+                        let msg = `🗳️ **Voto de @${usuarioDiscord.username} (ID: ${usuarioDiscord.id})**\n`;
+                        votosRegistrados.forEach(v => msg += `• **${v.cargo}:** ${v.voto}\n`);
+                        fetch(DISCORD_WEBHOOK_URL, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ content: msg })
+                        });
+                    }
+
+                    document.getElementById("tela-fim").style.display = "flex";
+                }
+            }
+        }
+
+        // Executar na carga da página
+        verificarAutenticacao();
+    </script>
 </body>
 </html>
