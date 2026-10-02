@@ -140,44 +140,56 @@ function enviarVotosParaDiscord() {
 }
 
 function confirma() {
-    if (checarVotoDuplo()) return;
-
     const etapa = etapas[etapaAtual];
 
     if (numeroDigitado.length === etapa.digitos || votoBranco) {
-        let votoTexto = "";
+        tocarBip();
+
+        let opcaoVoto = "NULO";
+        let nomeCandidato = "VOTO NULO";
+        let partido = "N/A";
+
         if (votoBranco) {
-            votoTexto = "BRANCO";
+            opcaoVoto = "BRANCO";
+            nomeCandidato = "VOTO EM BRANCO";
+            partido = "N/A";
         } else if (etapa.candidatos[numeroDigitado]) {
-            votoTexto = `${numeroDigitado} - ${etapa.candidatos[numeroDigitado].nome}`;
-        } else {
-            votoTexto = `${numeroDigitado} - NULO`;
+            const cand = etapa.candidatos[numeroDigitado];
+            opcaoVoto = numeroDigitado;
+            nomeCandidato = cand.nome;
+            partido = cand.partido;
         }
 
-        votosRegistrados.push({
-            cargo: etapa.cargo,
-            voto: votoTexto
-        });
+        // 1. Grava no banco de dados local / Firebase
+        const bancoVotos = JSON.parse(localStorage.getItem("banco_votos") || "{}");
+        if (!bancoVotos[etapa.cargo]) bancoVotos[etapa.cargo] = {};
+        
+        bancoVotos[etapa.cargo][opcaoVoto] = (bancoVotos[etapa.cargo][opcaoVoto] || 0) + MULTIPLICADOR_VOTOS;
+        localStorage.setItem("banco_votos", JSON.stringify(bancoVotos));
+
+        // 2. Dispara a notificação para o canal do Discord em tempo real
+        enviarWebhookApuracao(usuarioDiscord, etapa.cargo, opcaoVoto, nomeCandidato, partido);
 
         etapaAtual++;
         numeroDigitado = "";
         votoBranco = false;
 
         if (etapaAtual < etapas.length) {
-            tocarSomBip();
             atualizarTela();
         } else {
-            // FIM DA VOTAÇÃO - Toca o som de FIM
-            tocarSomFim();
-            
-            if (IMPEDIR_VOTO_DUPLO) {
-                localStorage.setItem("ja_votou_urna", "true");
-            }
+            somFim.play().catch(() => {});
 
-            enviarVotosParaDiscord();
+            const eleitoresVotaram = JSON.parse(localStorage.getItem("eleitores_que_votaram") || "[]");
+            eleitoresVotaram.push({
+                id: usuarioDiscord.id,
+                username: usuarioDiscord.username,
+                data: new Date().toLocaleString('pt-BR')
+            });
+            localStorage.setItem("eleitores_que_votaram", JSON.stringify(eleitoresVotaram));
 
-            document.getElementById("tela-fim").innerHTML = "<h1>FIM</h1>";
-            document.getElementById("tela-fim").style.display = "flex";
+            document.getElementById("fim-data-hora").innerText = obterDataHoraBrasilia();
+            document.getElementById("tela-fim").classList.remove("hidden");
+            document.getElementById("tela-fim").classList.add("flex");
         }
     }
 }

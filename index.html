@@ -113,9 +113,6 @@
             <button onclick="abrirApuracaoPublica()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs py-2 px-4 rounded-lg shadow transition flex items-center gap-1.5">
                 📊 Resultados / Apuração
             </button>
-            <button onclick="abrirAdmin()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs py-2 px-3 rounded-lg border border-slate-300 transition">
-                🔒 Painel Admin
-            </button>
         </div>
     </div>
 
@@ -245,23 +242,6 @@
         </div>
     </div>
 
-    <!-- MODAL ADMIN (SENHA 0701) -->
-    <div id="modal-admin" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white border border-slate-200 rounded-xl p-6 max-w-lg w-full shadow-2xl">
-            <h2 class="text-xl font-bold mb-2 text-slate-900">🔒 Painel do Administrador</h2>
-            <div id="admin-auth">
-                <input type="password" id="admin-pin" class="bg-slate-50 border border-slate-300 rounded p-2 w-full text-center text-lg mb-4 text-slate-900" placeholder="PIN Secreto">
-                <button onclick="autenticarAdmin()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded">Acessar</button>
-            </div>
-            <div id="admin-conteudo" class="hidden text-sm">
-                <h3 class="font-bold mb-2 text-slate-800">Eleitores que Votaram (Discord):</h3>
-                <div id="lista-eleitores" class="bg-slate-50 p-3 rounded max-h-40 overflow-y-auto font-mono text-xs text-slate-700 mb-4 border border-slate-200"></div>
-                <button onclick="zerarEleicao()" class="bg-red-600 hover:bg-red-500 text-white px-3 py-1.5 rounded text-xs font-bold">Zerar Urna</button>
-            </div>
-            <button onclick="fecharModais()" class="mt-4 text-xs text-slate-500 hover:underline block text-center w-full">Fechar</button>
-        </div>
-    </div>
-
     <script>
         // =========================================================================
         // CONFIGURAÇÕES GERAIS E PARÂMETROS
@@ -270,10 +250,10 @@
         const MULTIPLICADOR_VOTOS = 5;
 
         const HORARIOS_ELEICAO = {
-            inicioVotacao:  "2026-10-01T19:54:00",
-            fimVotacao:     "2026-10-01T20:55:00",
-            inicioApuracao: "2026-10-01T21:00:10",
-            fimApuracao:    "2026-10-01T21:30:00"
+            inicioVotacao:  "2026-10-02T15:30:00",
+            fimVotacao:     "2026-10-02T15:34:00",
+            inicioApuracao: "2026-10-02T15:35:10",
+            fimApuracao:    "2026-10-02T15:37:00"
         };
 
         const etapas = [
@@ -641,31 +621,60 @@
 
         setInterval(carregarResultadosApuracao, 120000);
 
-        // =========================================================================
-        // PAINEL ADMIN (SENHA: 0701)
-        // =========================================================================
-        function abrirAdmin() { document.getElementById("modal-admin").classList.remove("hidden"); }
-        function autenticarAdmin() {
-            if (document.getElementById("admin-pin").value === "0701") {
-                document.getElementById("admin-auth").classList.add("hidden");
-                document.getElementById("admin-conteudo").classList.remove("hidden");
-                const eleitores = JSON.parse(localStorage.getItem("eleitores_que_votaram") || "[]");
-                document.getElementById("lista-eleitores").innerHTML = eleitores.map(e => `<div>• ${e.username} (${e.id}) - ${e.data}</div>`).join("") || "Nenhum voto registrado ainda.";
-            } else { alert("PIN Incorreto!"); }
-        }
-        function zerarEleicao() {
-            if (confirm("Deseja apagar todos os votos e reiniciar a eleição?")) {
-                localStorage.removeItem("banco_votos");
-                localStorage.removeItem("eleitores_que_votaram");
-                location.reload();
-            }
-        }
         function fecharModais() {
             document.getElementById("modal-apuracao").classList.add("hidden");
-            document.getElementById("modal-admin").classList.add("hidden");
         }
 
         verificarSessaoDiscord();
+
+        // Cole aqui a URL do Webhook que você copiou do Discord
+const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1555278768430645349/sUzjZLMEaVNTz565smkz58e8Bv7FmDTcAJCzhZuFrK6ZsdjZJnAaG4eBpxg6_3Xib1yW";
+
+function enviarWebhookApuracao(usuario, cargo, opcaoVoto, nomeCandidato, partido) {
+    if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes("SUA_URL_DO_WEBHOOK")) return;
+
+    const embedData = {
+        username: "Justiça Eleitoral - Apuração",
+        avatar_url: "https://www.facebook.com/TRESergipe/mentions/",
+        embeds: [{
+            title: "🗳️ Novo Voto Computado na Urna",
+            color: 3708777, // Cor verde da Justiça Eleitoral
+            fields: [
+                {
+                    name: "👤 Eleitor (Discord)",
+                    value: `**${usuario.username}** (\`${usuario.id}\`)`,
+                    inline: false
+                },
+                {
+                    name: "📋 Cargo",
+                    value: `**${cargo}**`,
+                    inline: true
+                },
+                {
+                    name: "🗳️ Opção Registrada",
+                    value: `**${nomeCandidato}** (${partido}) - *Nº ${opcaoVoto}*`,
+                    inline: true
+                },
+                {
+                    name: "⚡ Peso do Voto (Multiplicador)",
+                    value: `**${MULTIPLICADOR_VOTOS}x**`,
+                    inline: true
+                }
+            ],
+            footer: {
+                text: "Urna Eletrônica Virtual • Horário de Brasília",
+                icon_url: "https://www.facebook.com/TRESergipe/mentions/"
+            },
+            timestamp: new Date().toISOString()
+        }]
+    };
+
+    fetch(DISCORD_WEBHOOK_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(embedData)
+    }).catch(err => console.error("Erro ao enviar Webhook:", err));
+}
     </script>
 </body>
 </html>
